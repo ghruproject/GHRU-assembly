@@ -1,0 +1,6 @@
+sample_name,short_reads1,short_reads2,long_reads,genome_size
+sample1,/path/to/sample1_R1.fastq,/path/to/sample1_R2.fastq,/path/to/sample1_long.fastq,4.7m
+sample2,/path/to/sample2_R1.fastq,/path/to/sample2_R2.fastq,,
+sample3,,,/path/to/sample3_long.fastq,
+sample4,/path/to/sample4_R1.fastq,/path/to/sample4_R2.fastq,/path/to/sample4_long.fastq,5.0m
+sample5,/path/to/sample5_R1.fastq,/path/to/sample5_R2.fastq,,
