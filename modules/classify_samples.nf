@@ -12,11 +12,11 @@ process CLASSIFY_SAMPLES {
     // Check proper samplesheet format
     """
     if [[ "$short_reads1" != "" && "$short_reads2" != "" && "$long_reads" != "" ]]; then
-        echo "hybrid"
+        echo -n "hybrid"
     elif [[ "$short_reads1" != "" && "$short_reads2" != "" && "$long_reads" == "" ]]; then
-        echo "short"
+        echo -n "short"
     elif [[ "$short_reads1" == "" && "$short_reads2" == "" && "$long_reads" != "" ]]; then
-        echo "long"
+        echo -n "long"
     fi
     """
 }

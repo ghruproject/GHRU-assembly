@@ -1,4 +1,6 @@
 process HYBRID_ASSEMBLY {
+    tag { sample_name }
+
     input:
     tuple( val(sample_name), path(short_reads1), path(short_reads2), path(long_reads), val(genome_size) )
     

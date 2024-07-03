@@ -21,16 +21,6 @@ include { HYBRID_ASSEMBLY } from './modules/hybrid_assembly'
 
 //include { QUALIFYR } from './modules/qualifyr'
 
-process test{
-    input:
-    tuple( val(sample_name), val(short_reads1), val(short_reads2), val(long_reads), val(genome_size))
-
-    script:
-    """
-    echo ${sample_name}
-    """
-
-}
 
 workflow{
     Channel
@@ -42,16 +32,15 @@ workflow{
     // Takes values from PARSE_SAMPLESHEET and classifies samples into relevant channels
     CLASSIFY_SAMPLES(sample_channel)
     
+    type = CLASSIFY_SAMPLES.out.map { it.last() }
 
+    type | view
 
-    test(CLASSIFY_SAMPLES.out)
-
-
-    if (CLASSIFY_SAMPLES.out == "short") {
+    if (type == "short") {
         SR_ASSEMBLY( sample_channel )
-    } else if (CLASSIFY_SAMPLES.out == "long") {
+    } else if (type == "long") {
         LR_ASSEMBLY( sample_channel )
-    } else if (CLASSIFY_SAMPLES.out == "hybrid") {
+    } else if (type == "hybrid") {
         HYBRID_ASSEMBLY( sample_channel )
     }
 
