@@ -1,9 +1,9 @@
 process PARSE_SAMPLESHEET {
     input:
-    path samplesheet from params.samplesheet
+    path (samplesheet)
 
     output:
-    tuple val(sample_name), file(short_reads1), file(short_reads2), file(long_reads), val(genome_size) into parsed_samples
+    tuple val(sample_name), path(short_reads1), path(short_reads2), path(long_reads), val(genome_size), emit:parsed_samples
 
     script:
     """

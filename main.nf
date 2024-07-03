@@ -24,7 +24,17 @@ include { CLASSIFY_SAMPLES } from './modules/classify_samples'
 
 
 workflow {
-    Channel.fromPath(params.samplesheet) | PARSE_SAMPLESHEET | CLASSIFY_SAMPLES
+
+    //parsed_samples = Channel.empty()
+    sample_sheet = Channel.fromPath(params.samplesheet)
+    
+    // Takes samplesheet from params and returns values
+    PARSE_SAMPLESHEET(sample_sheet)
+    // Takes values from PARSE_SAMPLESHEET and classifies samples into channels
+    short_reads_channel = Channel.empty()
+    long_reads_channel = Channel.empty()
+    hybrid_reads_channel = Channel.empty()
+    CLASSIFY_SAMPLES(PARSE_SAMPLESHEET.out)
 
     short_reads_channel
         .map { tuple(it[0], it[2], it[3]) }

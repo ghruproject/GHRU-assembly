@@ -1,6 +1,6 @@
 process CLASSIFY_SAMPLES {
     input:
-    tuple val(sample_name), file(short_reads1), file(short_reads2), file(long_reads), val(genome_size) from parsed_samples
+    tuple val(sample_name), file(short_reads1), file(short_reads2), file(long_reads), val(genome_size)
 
     output:
     tuple val(sample_name), val('short'), file(short_reads1), file(short_reads2), val(genome_size) into short_reads_channel
@@ -8,6 +8,8 @@ process CLASSIFY_SAMPLES {
     tuple val(sample_name), val('both'), file(short_reads1), file(short_reads2), file(long_reads), val(genome_size) into hybrid_reads_channel
 
     script:
+    // Check with Nigeria and team if we require single fastq file short-read assembly channel
+    // Check proper samplesheet format
     """
     if [[ -f $short_reads1 && -f $short_reads2 && ! -f $long_reads ]]; then
         echo "$sample_name short $short_reads1 $short_reads2 $genome_size" > short_reads.txt
