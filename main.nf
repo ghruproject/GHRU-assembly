@@ -15,84 +15,44 @@ include { CLASSIFY_SAMPLES } from './modules/classify_samples'
 
 //include { LR_ASSEMBLY } from './modules/lr_assembly'
 //include { SR_ASSEMBLY } from './modules/sr_assembly'
-//include { HYBRID_ASSEMBLY } from './modules/hybrid_assembly'
+include { HYBRID_ASSEMBLY } from './modules/hybrid_assembly'
 //include { QUAST } from './modules/quast'
 
 
 //include { QUALIFYR } from './modules/qualifyr'
 
+process test{
+    input:
+    tuple( val(sample_name), val(short_reads1), val(short_reads2), val(long_reads), val(genome_size))
+
+    script:
+    """
+    echo ${sample_name}
+    """
+
+}
+
+workflow{
+    Channel
+        .fromPath( params.samplesheet )
+        .splitCsv( header: true, sep: ',' )
+        .map { row -> tuple( row.sample_name, row.short_reads1, row.short_reads2, row.long_reads, row.genome_size ) }
+        .set { sample_channel }
+
+    // Takes values from PARSE_SAMPLESHEET and classifies samples into relevant channels
+    CLASSIFY_SAMPLES(sample_channel)
+    
 
 
-workflow {
+    test(CLASSIFY_SAMPLES.out)
 
-    //parsed_samples = Channel.empty()
-    sample_sheet = Channel.fromPath(params.samplesheet)
-    
-    // Takes samplesheet from params and returns values
-    PARSE_SAMPLESHEET(sample_sheet)
-    // Takes values from PARSE_SAMPLESHEET and classifies samples into channels
-    short_reads_channel = Channel.empty()
-    long_reads_channel = Channel.empty()
-    hybrid_reads_channel = Channel.empty()
-    CLASSIFY_SAMPLES(PARSE_SAMPLESHEET.out)
 
-    short_reads_channel
-        .map { tuple(it[0], it[2], it[3]) }
-        .set { kraken2_inputs; confindr_inputs }
-    
-    kraken2_inputs
-        .combine(short_reads_channel)
-        .map { tuple(it[0], it[1], it[2]) }
-        .set { shovill_inputs }
-    
-    long_reads_channel
-        .map { tuple(it[0], it[2], it[4]) }
-        .set { unicycler_inputs }
-    
-    hybrid_reads_channel
-        .map { tuple(it[0], it[2], it[3], it[4], it[5]) }
-        .set { bacass_inputs }
-    
-    shovill_inputs
-        .map { tuple(it[0], 'short', it[1], it[2], it[3]) }
-        .set { shovill_reads }
-    
-    unicycler_inputs
-        .map { tuple(it[0], 'long', it[1], it[2]) }
-        .set { unicycler_reads }
-    
-    bacass_inputs
-        .map { tuple(it[0], 'both', it[1], it[2], it[3], it[4]) }
-        .set { bacass_reads }
-    
-    shovill_reads
-        .map { tuple(it[0], it[2], it[3]) }
-        .combine(kraken2_reports)
-        .map { tuple(it[0], it[1], it[2]) }
-        .combine(confindr_reports)
-        .map { tuple(it[0], it[1], it[2]) }
-        .combine(shovill_assemblies)
-        .map { tuple(it[0], it[1], it[2], it[3]) }
-        .set { quast_inputs }
-    
-    unicycler_reads
-        .combine(unicycler_assemblies)
-        .set { quast_inputs }
-    
-    bacass_reads
-        .combine(bacass_assemblies)
-        .set { quast_inputs }
-    
-    quast_inputs
-        .map { it[3] }
-        .combine(quast_reports)
-        .map { tuple(it[0], it[1]) }
-        .set { qualifyr_inputs }
-    
-    qualifyr_inputs
-        .combine(kraken2_reports)
-        .map { tuple(it[0], it[1]) }
-        .combine(confindr_reports)
-        .map { tuple(it[0], it[1]) }
-        .set { qualifyr_reports }
+    if (CLASSIFY_SAMPLES.out == "short") {
+        SR_ASSEMBLY( sample_channel )
+    } else if (CLASSIFY_SAMPLES.out == "long") {
+        LR_ASSEMBLY( sample_channel )
+    } else if (CLASSIFY_SAMPLES.out == "hybrid") {
+        HYBRID_ASSEMBLY( sample_channel )
+    }
+
 }

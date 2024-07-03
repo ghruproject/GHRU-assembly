@@ -1,22 +1,22 @@
 process CLASSIFY_SAMPLES {
+    tag { sample_name }
+
     input:
-    tuple val(sample_name), file(short_reads1), file(short_reads2), file(long_reads), val(genome_size)
+    tuple( val(sample_name), val(short_reads1), val(short_reads2), val(long_reads), val(genome_size) )
 
     output:
-    tuple val(sample_name), val('short'), file(short_reads1), file(short_reads2), val(genome_size) into short_reads_channel
-    tuple val(sample_name), val('long'), file(long_reads), val(genome_size) into long_reads_channel
-    tuple val(sample_name), val('both'), file(short_reads1), file(short_reads2), file(long_reads), val(genome_size) into hybrid_reads_channel
+    tuple( val(sample_name), val(short_reads1), val(short_reads2), val(long_reads), val(genome_size), stdout)
 
     script:
     // Check with Nigeria and team if we require single fastq file short-read assembly channel
     // Check proper samplesheet format
     """
-    if [[ -f $short_reads1 && -f $short_reads2 && ! -f $long_reads ]]; then
-        echo "$sample_name short $short_reads1 $short_reads2 $genome_size" > short_reads.txt
-    elif [[ -f $long_reads && ! -f $short_reads1 && ! -f $short_reads2 ]]; then
-        echo "$sample_name long $long_reads $genome_size" > long_reads.txt
-    elif [[ -f $short_reads1 && -f $short_reads2 && -f $long_reads ]]; then
-        echo "$sample_name both $short_reads1 $short_reads2 $long_reads $genome_size" > hybrid_reads.txt
+    if [[ "$short_reads1" != "" && "$short_reads2" != "" && "$long_reads" != "" ]]; then
+        echo "hybrid"
+    elif [[ "$short_reads1" != "" && "$short_reads2" != "" && "$long_reads" == "" ]]; then
+        echo "short"
+    elif [[ "$short_reads1" == "" && "$short_reads2" == "" && "$long_reads" != "" ]]; then
+        echo "long"
     fi
     """
 }

@@ -3,7 +3,7 @@ process PARSE_SAMPLESHEET {
     path (samplesheet)
 
     output:
-    tuple val(sample_name), path(short_reads1), path(short_reads2), path(long_reads), val(genome_size), emit:parsed_samples
+    tuple val(sample_name), path(short_reads1), path(short_reads2), path(long_reads), val(genome_size), emit: parsed_samples
 
     script:
     """
