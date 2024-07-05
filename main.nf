@@ -27,21 +27,32 @@ workflow{
         .fromPath( params.samplesheet )
         .splitCsv( header: true, sep: ',' )
         .map { row -> tuple( row.sample_name, row.short_reads1, row.short_reads2, row.long_reads, row.genome_size ) }
-        .set { sample_channel }
+        .branch { row ->
+            srt: row[3] == "" && row[1] != "" && row[2] != ""
+            lng: row[3] != "" && row[1] == "" && row[2] == ""
+            hyb: row[3] != "" && row[1] != "" && row[2] != ""
+        }
+        .set { assembly }
 
-    // Takes values from PARSE_SAMPLESHEET and classifies samples into relevant channels
-    CLASSIFY_SAMPLES(sample_channel)
-    
-    type = CLASSIFY_SAMPLES.out.map { it.last() }
+    assembly.srt
+    .map { row -> tuple(row[0], row[1], row[2], row[4]) }
+    .set { srt_assembly }
 
-    type | view
+    assembly.lng
+    .map { row -> tuple(row[0], row[3], row[4]) }
+    .set { lng_assembly }
 
-    if (type == "short") {
-        SR_ASSEMBLY( sample_channel )
-    } else if (type == "long") {
-        LR_ASSEMBLY( sample_channel )
-    } else if (type == "hybrid") {
-        HYBRID_ASSEMBLY( sample_channel )
-    }
+    assembly.hyb
+    .map { row -> tuple(row[0], row[1], row[2], row[3], row[4]) }
+    .set { hyb_assembly }
 
+    //assembly.srt.view { "short "+it }
+    //assembly.lng.view { "long "+it }
+    //assembly.hyb.view { "hybrid "+it }
+
+    srt_assembly.view { "srt "+it }
+    lng_assembly.view { "lng "+it }
+    hyb_assembly.view { "hyb "+it }
+
+    HYBRID_ASSEMBLY( hyb_assembly )
 }
