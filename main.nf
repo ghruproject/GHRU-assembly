@@ -16,43 +16,60 @@ include { CLASSIFY_SAMPLES } from './modules/classify_samples'
 //include { LR_ASSEMBLY } from './modules/lr_assembly'
 //include { SR_ASSEMBLY } from './modules/sr_assembly'
 include { HYBRID_ASSEMBLY } from './modules/hybrid_assembly'
-//include { QUAST } from './modules/quast'
-
 
 //include { QUALIFYR } from './modules/qualifyr'
 
 
 workflow{
+    // Evaluates the samplesheet and classifies the samples
     Channel
         .fromPath( params.samplesheet )
         .splitCsv( header: true, sep: ',' )
-        .map { row -> tuple( row.sample_name, row.short_reads1, row.short_reads2, row.long_reads, row.genome_size ) }
         .branch { row ->
-            srt: row[3] == "" && row[1] != "" && row[2] != ""
-            lng: row[3] != "" && row[1] == "" && row[2] == ""
-            hyb: row[3] != "" && row[1] != "" && row[2] != ""
+            srt: row.long_reads == "" && row.short_reads1 != "" && row.short_reads2 != ""
+            lng: row.long_reads != "" && row.short_reads1 == "" && row.short_reads2 == ""
+            hyb: row.long_reads != "" && row.short_reads1 != "" && row.short_reads2 != ""
         }
         .set { assembly }
 
+    // Feeds short-read assembly channel
     assembly.srt
-    .map { row -> tuple(row[0], row[1], row[2], row[4]) }
+    .map { row -> tuple(row.sample_name, row.short_reads1, row.short_reads2) }
     .set { srt_assembly }
 
+    // Feeds short-read reads channel
+    assembly.srt
+    .map { row -> tuple(row.sample_name, row.short_reads1, row.short_reads2) }
+    .set { srt_reads }
+
+    // Feeds long-read assembly channel
     assembly.lng
-    .map { row -> tuple(row[0], row[3], row[4]) }
+    .map { row -> tuple(row.sample_name, row.long_reads, row.genome_size) }
     .set { lng_assembly }
 
+    // Feeds long-read reads channel
+    assembly.lng
+    .map { row -> tuple(row.sample_name, row.long_reads) }
+    .set { lng_reads }
+
+    // Feeds hybrid assembly channel
     assembly.hyb
-    .map { row -> tuple(row[0], row[1], row[2], row[3], row[4]) }
+    .map { row -> tuple(row.sample_name, row.short_reads1, row.short_reads2, row.long_reads, row.genome_size) }
     .set { hyb_assembly }
 
-    //assembly.srt.view { "short "+it }
-    //assembly.lng.view { "long "+it }
-    //assembly.hyb.view { "hybrid "+it }
+    // Feeds short-read read channel
+    assembly.hyb
+    .map { row -> tuple(row.sample_name, row.short_reads1, row.short_reads2) }
+    .set { srt_reads }
+    
+    // Feeds long-read read channel
+    assembly.hyb
+    .map { row -> tuple(row.sample_name, row.long_reads) }
+    .set { lng_reads }
 
-    srt_assembly.view { "srt "+it }
-    lng_assembly.view { "lng "+it }
-    hyb_assembly.view { "hyb "+it }
 
-    HYBRID_ASSEMBLY( hyb_assembly )
+    //HYBRID_ASSEMBLY( hyb_assembly )
+    //LONG_ASSEMBLY( lng_assembly )
+    //SHORT_ASSEMBLY( srt_assembly )
 }
+
