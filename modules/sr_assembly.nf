@@ -1,2 +1,0 @@
-process SR_ASSEMBLY {
-}
