@@ -1,5 +1,5 @@
 process CALCULATE_GENOME_SIZE{
-    label 'kmc_cntainer'
+    label 'kmc_container'
 
      tag { sample_id }
 
@@ -10,18 +10,18 @@ process CALCULATE_GENOME_SIZE{
     tuple val(sample_id), path(short_reads1), path(short_reads2), env(genome_size)
 
     script:
-
+    
     """
-    short_reads1=$short_reads1
-    short_reads2=$short_reads2
-    GSIZE=$genome_size 
+    read_one="${short_reads1}"
+    read_two="${short_reads2}"
+    GSIZE="${genome_size }"
     source get_genome_size.sh
     genome_size=`cat gsize.txt`
     """
 }
 
 
-process DETERMINE_MIN_READ_LENGTH {
+process DETERMINE_MIN_READ_LENGTH{
     label 'bash_container'
     
     tag { sample_id }
@@ -33,12 +33,15 @@ process DETERMINE_MIN_READ_LENGTH {
     env(min_length)
 
     script:
+
+    read_one="${short_reads1}"
+    read_two="${short_reads2}"
     """
-    min_length=`gzip -cd ${short_reads1} | head -n 400000 | printf "%.0f" \$(awk 'NR%4==2{sum+=length(\$0)}END{print sum/(NR/4)/3}')`
+    min_length=`gzip -cd ${read_one} | head -n 400000 | printf "%.0f" \$(awk 'NR%4==2{sum+=length(\$0)}END{print sum/(NR/4)/3}')`
     """
 }
 
-process TRIMMING {
+process TRIMMING{
 
     label 'trimmomatic_container'
 

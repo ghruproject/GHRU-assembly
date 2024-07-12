@@ -21,7 +21,7 @@ nextflow.enable.dsl=2
 //include { SPECIATION } from './modules/speciation'
 include { SR_ASSEMBLY     } from './workflows/sr_assembly'
 include { LR_ASSEMBLY     } from './workflows/lr_assembly'
-//include { HYBRID_ASSEMBLY } from './workflows/hybrid_assembly'
+include { HY_ASSEMBLY } from './workflows/hybrid_assembly'
 
 //include { QUALIFYR } from './modules/qualifyr'
 include { DETERMINE_MIN_READ_LENGTH } from './modules/short_reads_preprocess'
@@ -81,7 +81,7 @@ workflow{
     LR_ASSEMBLY ()
     
     //run hybrid assembly workflow
-    //HYBRID_ASSEMBLY( hyb_assembly )
+    HY_ASSEMBLY()
 
 }
 
