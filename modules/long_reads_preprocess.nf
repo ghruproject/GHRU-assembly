@@ -32,7 +32,7 @@ process NANOPLOT {
     val(assembler_thread)
 
     output:
-    tuple val(meta), path("*.html"), emit: html
+    tuple val(sample_id), path("*.html"), emit: html
 
     script:
     LR="${long_reads}"

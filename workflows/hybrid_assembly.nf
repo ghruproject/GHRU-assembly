@@ -8,7 +8,8 @@ include { PORECHOP                    }  from '../modules/long_reads_preprocess'
 include { UNICYCLER                   }  from '../modules/hybrid_assemblers'
 include { QUAST_HY                    }  from '../modules/quast' 
 
- workflow HY_ASSEMBLY{
+
+workflow HY_ASSEMBLY{
     Channel
         .fromPath( params.samplesheet )
         .splitCsv( header: true, sep: ',' )
@@ -56,13 +57,7 @@ include { QUAST_HY                    }  from '../modules/quast'
     //hybrid assembly with unicycler
     UNICYCLER(processed_short_reads, processed_long_reads, params.assembler_thread)
 
-
-
-
-
-
-
-
+    QUAST_HY(UNICYCLER.out)
 
 
  }

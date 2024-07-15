@@ -1,7 +1,7 @@
 process UNICYCLER{
     label 'unicycler_container'
 
-    publishDir "${params.output}/long_read_stats", mode: 'copy', pattern: '*.html'
+    publishDir "${params.output}/hybrid_assemblies", mode: 'copy', pattern: '*.fasta'
 
     tag { sample_id }
 
@@ -11,15 +11,17 @@ process UNICYCLER{
     val(assembler_thread)
 
     output:
-    val(sample_id)
+    tuple val(sample_id), path(fasta)
 
     script:
     read_one="${short_reads1}"
     read_two="${short_reads2}"
     LR="${long_reads}"
     CPU="${assembler_thread}"
+    fasta="${sample_id}-unicycler-contigs.fasta"
 
     """
     unicycler --threads $CPU -1 $read_one -2 $read_two -l $LR -o unicycler_out
+    mv unicycler_out/assembly.fasta $fasta
     """
 }
