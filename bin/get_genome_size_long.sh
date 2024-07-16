@@ -1,8 +1,7 @@
 #!/bin/bash
 if [[ -z "$GSIZE" ]]; then
     echo $GSIZE
-    mkdir tmp_out
-    kmc -sm -m8 -t4 -k21 -ci10 $LR tmp_out 2>&1 | tee kmc_log.txt
+    kmc -sm -m8 -t4 -k21 -ci10 $LR km_file . 2>&1 | tee kmc_log.txt
     BP=$(grep -i "No. of unique counted k-mers" kmc_log.txt | awk '{print $NF}')
     CALCGSIZE=$(printf "%.0f" ${BP})
     echo $CALCGSIZE > gsize.txt
