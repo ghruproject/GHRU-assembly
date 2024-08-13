@@ -10,25 +10,18 @@ include { QUAST_HY                    }  from '../modules/quast'
 
 
 workflow HY_ASSEMBLY{
-    Channel
-        .fromPath( params.samplesheet )
-        .splitCsv( header: true, sep: ',' )
-        .branch { row ->
-            srt: row.long_reads == "" && row.short_reads1 != "" && row.short_reads2 != ""
-            lng: row.long_reads != "" && row.short_reads1 == "" && row.short_reads2 == ""
-            hyb: row.long_reads != "" && row.short_reads1 != "" && row.short_reads2 != ""
-        }
-        .set { assembly }
+
+    take:
     
-    // Feeds short-read read channel
-    assembly.hyb
-    .map { row -> tuple(row.sample_id, row.short_reads1, row.short_reads2, row.genome_size) }
-    .set { hyb_srt_reads }
-    
-    // Feeds long-read read channel
-    assembly.hyb
-    .map { row -> tuple(row.sample_id, row.long_reads, row.genome_size) }
-    .set { hyb_lng_reads }
+    //take short reads from hybrid channel
+    hyb_srt_reads
+
+    //take long reads from hybrid channel
+    hyb_lng_reads
+
+
+    //main workflow for hybrid assembly
+    main: 
 
     //calculate genomesize for which it is not available and create a channel for reads with genome size
     reads_with_genome_size = CALCULATE_GENOME_SIZE(hyb_srt_reads)

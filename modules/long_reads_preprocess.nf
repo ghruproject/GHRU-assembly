@@ -50,7 +50,7 @@ process PORECHOP{
 
     label 'porechop_container'
 
-    publishDir "${params.output}/long_read_stats", mode: 'copy', pattern: '*.html'
+    publishDir "${params.output}/processed_long_reads", mode: 'copy', pattern: '*.fastq.gz'
 
     tag { sample_id }
 
