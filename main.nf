@@ -29,6 +29,7 @@ if (params.help) {
 
     //start the actual workflow
     workflow{
+        
         // Evaluates the samplesheet and classifies the samples
         Channel
             .fromPath( params.samplesheet )
@@ -36,52 +37,40 @@ if (params.help) {
             .branch { row ->
                  srt: row.long_reads == "" && row.short_reads1 != "" && row.short_reads2 != ""
                  lng: row.long_reads != "" && row.short_reads1 == "" && row.short_reads2 == ""
-                hyb: row.long_reads != "" && row.short_reads1 != "" && row.short_reads2 != ""
+                 hyb: row.long_reads != "" && row.short_reads1 != "" && row.short_reads2 != ""
             }
             .set { assembly }
 
-        // Feeds short-read assembly channel
-        assembly.srt
-        .map { row -> tuple(row.sample_id, row.short_reads1, row.short_reads2) }
-        .set { srt_assembly }
-
         // Feeds short-read reads channel
         assembly.srt
-        .map { row -> tuple(row.sample_id, row.short_reads1, row.short_reads2) }
+        .map { row -> tuple(row.sample_id, row.short_reads1, row.short_reads2, row.genome_size) }
         .set { srt_reads }
 
-        // Feeds long-read assembly channel
-        assembly.lng
-        .map { row -> tuple(row.sample_id, row.long_reads, row.genome_size) }
-        .set { lng_assembly }
 
         // Feeds long-read reads channel
         assembly.lng
-        .map { row -> tuple(row.sample_id, row.long_reads) }
+        .map { row -> tuple(row.sample_id, row.long_reads, row.genome_size) }
         .set { lng_reads }
 
-        // Feeds hybrid assembly channel
+        // Feeds short-read read channel for hybrid assembly
         assembly.hyb
-        .map { row -> tuple(row.sample_id, row.short_reads1, row.short_reads2, row.long_reads, row.genome_size) }
-        .set { hyb_assembly }
-
-        // Feeds short-read read channel
-        assembly.hyb
-        .map { row -> tuple(row.sample_id, row.short_reads1, row.short_reads2) }
-        .set { srt_reads }
+        .map { row -> tuple(row.sample_id, row.short_reads1, row.short_reads2, row.genome_size) }
+        .set { hyb_srt_reads }
     
-        // Feeds long-read read channel
+        // Feeds long-read read channel for hybrid assembly
         assembly.hyb
-        .map { row -> tuple(row.sample_id, row.long_reads) }
-        .set { lng_reads }
+        .map { row -> tuple(row.sample_id, row.long_reads, row.genome_size) }
+        .set { hyb_lng_reads }
+
+
 
         //run short read assembly workflow
-        SR_ASSEMBLY ()
+        SR_ASSEMBLY (srt_reads)
 
         //run long read assembly workflow
-        LR_ASSEMBLY ()
+        LR_ASSEMBLY (lng_reads)
     
         //run hybrid assembly workflow
-        HY_ASSEMBLY()
+        HY_ASSEMBLY(hyb_srt_reads, hyb_lng_reads)
     }
 }

@@ -7,18 +7,16 @@ include { QUAST_LR                    } from '../modules/quast'
 
 
 workflow LR_ASSEMBLY{
-    Channel
-        .fromPath( params.samplesheet )
-        .splitCsv( header: true, sep: ',' )
-        .branch { row ->
-            lng: row.long_reads != "" && row.short_reads1 == "" && row.short_reads2 == ""
-        }
-        .set { assembly }
 
-    // Feeds long-read reads channel
-    assembly.lng
-    .map { row -> tuple(row.sample_id, row.long_reads, row.genome_size) }
-    .set { lng_reads }
+    take:
+
+    //take the long reads read channel from the main
+    lng_reads
+
+
+    //main workflow for long read assembly
+    main:
+
 
     //calculate genomesize for which it is not available and create a channel for reads with genome size
     read_with_genome_size = CALCULATE_GENOME_SIZE(lng_reads)

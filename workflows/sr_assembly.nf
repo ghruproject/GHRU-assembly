@@ -5,21 +5,18 @@ include { DETERMINE_MIN_READ_LENGTH   } from '../modules/short_reads_preprocess'
 include { TRIMMING                    } from '../modules/short_reads_preprocess'
 include { FASTQC                      } from '../modules/short_reads_preprocess'
 include { ASSEMBLY_SHOVILL            } from '../modules/short_read_assembly'
-include { QUAST_SR                       } from '../modules/quast'
+include { QUAST_SR                    } from '../modules/quast'
 
 workflow SR_ASSEMBLY{
-    Channel
-        .fromPath( params.samplesheet )
-        .splitCsv( header: true, sep: ',' )
-        .branch { row ->
-            srt: row.long_reads == "" && row.short_reads1 != "" && row.short_reads2 != ""
-        }
-        .set { assembly }
 
-    // Feeds short-read reads channel
-    assembly.srt
-    .map { row -> tuple(row.sample_id, row.short_reads1, row.short_reads2, row.genome_size) }
-    .set { srt_reads }
+    take:
+
+    //take the short reads read channel from the main
+    srt_reads
+
+
+    //main workflow for short read assembly
+    main:
 
     //calculate genomesize for which it is not available and create a channel for reads with genome size
     reads_with_genome_size = CALCULATE_GENOME_SIZE(srt_reads)
