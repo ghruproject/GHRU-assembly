@@ -23,6 +23,7 @@ process CALCULATE_GENOME_SIZE{
 
 process DETERMINE_MIN_READ_LENGTH{
     label 'bash_container'
+    //label 'process_low'
     
     tag { sample_id }
 

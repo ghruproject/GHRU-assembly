@@ -1,5 +1,6 @@
 process CALCULATE_GENOME_SIZE{
     label 'kmc_container'
+    label 'process_medium'
 
     tag { sample_id }
 
@@ -22,6 +23,7 @@ process CALCULATE_GENOME_SIZE{
 process NANOPLOT {
 
     label 'nanoplot_container'
+    label 'process_low'
 
     publishDir "${params.output}/long_read_stats", mode: 'copy', pattern: '*.html'
 
@@ -39,7 +41,7 @@ process NANOPLOT {
     CPU="${assembler_thread}"
 
     """
-    NanoPlot --fastq $LR -t $CPU -o nanoplot_out
+    NanoPlot --fastq $LR -t $task.cpus -o nanoplot_out --no_static
     mv nanoplot_out/NanoPlot-report.html ${sample_id}_nanoplot_report.html
     """
 }
@@ -49,6 +51,7 @@ process NANOPLOT {
 process PORECHOP{
 
     label 'porechop_container'
+    label 'process_high'
 
     publishDir "${params.output}/processed_long_reads", mode: 'copy', pattern: '*.fastq.gz'
 
@@ -68,7 +71,7 @@ process PORECHOP{
     CPU="${assembler_thread}"
     preprocessed_ont="preprocessed-${sample_id}-ont.fastq.gz"
     """
-    porechop -i $LR -o $preprocessed_ont -t $CPU
+    porechop -i $LR -o $preprocessed_ont -t $task.cpus
     """
 
 }
