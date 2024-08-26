@@ -6,6 +6,9 @@ include { TRIMMING                    } from '../modules/short_reads_preprocess'
 include { FASTQC                      } from '../modules/short_reads_preprocess'
 include { ASSEMBLY_SHOVILL            } from '../modules/short_read_assembly'
 include { QUAST_SR                    } from '../modules/quast'
+include { CHECKM_MARKERS              } from '../modules/contamination'
+include { CONTAMINATION_CHECKM        } from '../modules/contamination'
+include { CONTAMINATION_GUNC          } from '../modules/contamination'
 
 workflow SR_ASSEMBLY{
 
@@ -14,6 +17,8 @@ workflow SR_ASSEMBLY{
     //take the short reads read channel from the main
     srt_reads
 
+    //take the guncDB path from main
+    gunc_db
 
     //main workflow for short read assembly
     main:
@@ -39,4 +44,10 @@ workflow SR_ASSEMBLY{
     //assess assembly using quast
     QUAST_SR (ASSEMBLY_SHOVILL.out)
 
+    //contamination check checkm
+    CHECKM_MARKERS(params.genusNAME)
+    CONTAMINATION_CHECKM(ASSEMBLY_SHOVILL.out, CHECKM_MARKERS.out)
+
+    //contamination check gunc
+    CONTAMINATION_GUNC(ASSEMBLY_SHOVILL.out, gunc_db)
 }

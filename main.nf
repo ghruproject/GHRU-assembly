@@ -14,8 +14,7 @@ startMessage(pipelineVersion)
 include { SR_ASSEMBLY     } from './workflows/sr_assembly'
 include { LR_ASSEMBLY     } from './workflows/lr_assembly'
 include { HY_ASSEMBLY     } from './workflows/hybrid_assembly'
-
-
+include { GUNC_DB         } from './modules/contamination'
 
 if (params.help) {
         helpMessage()
@@ -62,10 +61,11 @@ if (params.help) {
         .map { row -> tuple(row.sample_id, row.long_reads, row.genome_size) }
         .set { hyb_lng_reads }
 
-
+        //download the guncDB for contamination check
+        GUNC_DB()
 
         //run short read assembly workflow
-        SR_ASSEMBLY (srt_reads)
+        SR_ASSEMBLY (srt_reads, GUNC_DB.out)
 
         //run long read assembly workflow
         LR_ASSEMBLY (lng_reads)
