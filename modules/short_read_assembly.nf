@@ -12,6 +12,7 @@ process ASSEMBLY_SHOVILL {
     tuple val(sample_id), path(short_reads1), path(short_reads2), val(genome_size)
     val min_contig_length
     val assembler_thread
+    val assembler_ram
 
     output:
     tuple val(sample_id), path(fasta)
@@ -19,7 +20,7 @@ process ASSEMBLY_SHOVILL {
     script:
     fasta="${sample_id}.contigs.fasta"
     """  
-    shovill --R1 $short_reads1 --R2 $short_reads2 --outdir results --cpus $assembler_thread --ram 64 --minlen $min_contig_length --force
+    shovill --R1 $short_reads1 --R2 $short_reads2 --outdir results --cpus $assembler_thread --ram $assembler_ram --minlen $min_contig_length --force
     mv results/contigs.fa $fasta
     """
 }

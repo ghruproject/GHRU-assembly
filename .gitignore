@@ -2,3 +2,5 @@
 work
 *out*
 *input*
+*.dag
+*.png
