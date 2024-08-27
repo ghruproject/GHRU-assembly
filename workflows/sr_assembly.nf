@@ -6,6 +6,8 @@ include { TRIMMING                    } from '../modules/short_reads_preprocess'
 include { FASTQC                      } from '../modules/short_reads_preprocess'
 include { ASSEMBLY_SHOVILL            } from '../modules/short_read_assembly'
 include { QUAST_SR                    } from '../modules/quast'
+include { SPECIATION                  }  from '../modules/speciation' 
+
 
 workflow SR_ASSEMBLY{
 
@@ -39,4 +41,6 @@ workflow SR_ASSEMBLY{
     //assess assembly using quast
     QUAST_SR (ASSEMBLY_SHOVILL.out)
 
+    //speciate with speciator
+    SPECIATION(ASSEMBLY_SHOVILL.out)
 }

@@ -7,6 +7,7 @@ include { NANOPLOT                    }  from '../modules/long_reads_preprocess'
 include { PORECHOP                    }  from '../modules/long_reads_preprocess'
 include { UNICYCLER                   }  from '../modules/hybrid_assemblers'
 include { QUAST_HY                    }  from '../modules/quast' 
+include { SPECIATION                  }  from '../modules/speciation' 
 
 
 workflow HY_ASSEMBLY{
@@ -52,5 +53,6 @@ workflow HY_ASSEMBLY{
 
     QUAST_HY(UNICYCLER.out)
 
-
+    //speciate with speciator
+    SPECIATION(UNICYCLER.out)
  }

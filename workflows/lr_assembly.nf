@@ -4,6 +4,7 @@ include { NANOPLOT                    }  from '../modules/long_reads_preprocess'
 include { PORECHOP                    }  from '../modules/long_reads_preprocess'
 include { ASSEMBLY_DRAGONFLYE         } from '../modules/long_read_assembly'
 include { QUAST_LR                    } from '../modules/quast'
+include { SPECIATION                  }  from '../modules/speciation' 
 
 
 workflow LR_ASSEMBLY{
@@ -35,5 +36,8 @@ workflow LR_ASSEMBLY{
 
     //assess assembly using quast
     QUAST_LR(ASSEMBLY_DRAGONFLYE.out)
+
+    //speciate with speciator
+    SPECIATION(ASSEMBLY_DRAGONFLYE.out)
 
 }

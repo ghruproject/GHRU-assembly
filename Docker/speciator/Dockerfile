@@ -5,6 +5,12 @@ LABEL authors="Julio Diaz Caballero" \
 
 RUN apt update; apt-get install -y jq
 
-ADD test2 .
+# Error with base entry point
+#ENTRYPOINT [ "/bin/sh" ]
 
-ENTRYPOINT [ "/bin/sh" ]
+# Error with finding speciator.py or permissions
+ENTRYPOINT [ "/usr/bin/env" ]
+RUN ["chmod", "a+rwx", "/speciator.py"]
+RUN ["chmod", "-R", "a+rwx", "/libraries"]
+RUN ["chmod", "-R", "a+rwx", "/bactinspector"]
+CMD ["/bin/bash"]
