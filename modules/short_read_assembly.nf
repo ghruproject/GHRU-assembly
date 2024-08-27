@@ -1,6 +1,7 @@
 // Return sample_id and assembly, and publish the assembly to ${params.output}/assemblies directory based on ${params.assembly_publish}
 process ASSEMBLY_SHOVILL {
     label 'shovill_container'
+    label 'process_medium'
  
     errorStrategy 'ignore'
 
@@ -20,7 +21,7 @@ process ASSEMBLY_SHOVILL {
     script:
     fasta="${sample_id}.contigs.fasta"
     """  
-    shovill --R1 $short_reads1 --R2 $short_reads2 --outdir results --cpus $assembler_thread --ram $assembler_ram --minlen $min_contig_length --force
+    shovill --R1 $short_reads1 --R2 $short_reads2 --outdir results --cpus $task.cpus --ram $task.memory --minlen $min_contig_length --force
     mv results/contigs.fa $fasta
     """
 }
