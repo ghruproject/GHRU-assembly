@@ -1,7 +1,7 @@
 process ASSEMBLY_DRAGONFLYE{
 
     label 'dragonflye_container'
-    label 'process_medium'
+    label 'process_high'
 
     tag { sample_id }
     
