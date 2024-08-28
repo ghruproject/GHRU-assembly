@@ -7,7 +7,11 @@ include { NANOPLOT                    }  from '../modules/long_reads_preprocess'
 include { PORECHOP                    }  from '../modules/long_reads_preprocess'
 include { UNICYCLER                   }  from '../modules/hybrid_assemblers'
 include { QUAST_HY                    }  from '../modules/quast' 
-
+include { SPECIATION                  }  from '../modules/speciation' 
+include { CHECKM_MARKERS                 } from '../modules/contamination'
+include { CONTAMINATION_CHECKM           } from '../modules/contamination'
+include { CONTAMINATION_GUNC             } from '../modules/contamination'
+include { COMBINE_CONTAMINATION_REPORTS  } from '../modules/contamination'
 
 workflow HY_ASSEMBLY{
 

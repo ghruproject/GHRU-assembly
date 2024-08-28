@@ -4,7 +4,11 @@ include { NANOPLOT                    }  from '../modules/long_reads_preprocess'
 include { PORECHOP                    }  from '../modules/long_reads_preprocess'
 include { ASSEMBLY_DRAGONFLYE         } from '../modules/long_read_assembly'
 include { QUAST_LR                    } from '../modules/quast'
-
+include { SPECIATION                  }  from '../modules/speciation' 
+include { CHECKM_MARKERS                 } from '../modules/contamination'
+include { CONTAMINATION_CHECKM           } from '../modules/contamination'
+include { CONTAMINATION_GUNC             } from '../modules/contamination'
+include { COMBINE_CONTAMINATION_REPORTS  } from '../modules/contamination'
 
 workflow LR_ASSEMBLY{
 
