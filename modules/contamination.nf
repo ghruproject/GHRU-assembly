@@ -58,7 +58,7 @@ process GATHER_GUNC_DB {
     if [ ! -f "${gunc_db}/gunc_db.dmnd" ]; then
         mkdir new_guncDB
         gunc download_db new_guncDB
-        new_db_file=\$(ls new_gunc_db)
+        new_db_file=\$(ls new_guncDB)
         mv new_guncDB/"\$new_db_file" "$gunc_db"/gunc_db.dmnd
     fi    
     """

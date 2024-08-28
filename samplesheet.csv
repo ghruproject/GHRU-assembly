@@ -1,7 +1,3 @@
 sample_id,short_reads1,short_reads2,long_reads,genome_size
-nigeria-acinetobacter_bauminnii-01,/Users/jdiazcaballero/Downloads/nigeria-acinetobacter_bauminnii-01-illumina-R1.fastq.gz,/Users/jdiazcaballero/Downloads/nigeria-acinetobacter_bauminnii-01-illumina-R2.fastq.gz,/Users/jdiazcaballero/Downloads/nigeria-acinetobacter_bauminnii-01-ont.fastq.gz,3.9m
-nigeria-acinetobacter_bauminnii-01,/Users/jdiazcaballero/Downloads/nigeria-acinetobacter_bauminnii-01-illumina-R1.fastq.gz,/Users/jdiazcaballero/Downloads/nigeria-acinetobacter_bauminnii-01-illumina-R2.fastq.gz,,3.9m
-nigeria-acinetobacter_bauminnii-01,/Users/jdiazcaballero/Downloads/nigeria-acinetobacter_bauminnii-01-illumina-R1.fastq.gz,/Users/jdiazcaballero/Downloads/nigeria-acinetobacter_bauminnii-01-illumina-R2.fastq.gz,/Users/jdiazcaballero/Downloads/nigeria-acinetobacter_bauminnii-01-ont.fastq.gz,
-nigeria-acinetobacter_bauminnii-01,,,/Users/jdiazcaballero/Downloads/nigeria-acinetobacter_bauminnii-01-ont.fastq.gz,
-nigeria-acinetobacter_bauminnii-01,,,/Users/jdiazcaballero/Downloads/nigeria-acinetobacter_bauminnii-01-ont.fastq.gz,3.9m
-nigeria-acinetobacter_bauminnii-01,/Users/jdiazcaballero/Downloads/nigeria-acinetobacter_bauminnii-01-illumina-R1.fastq.gz,/Users/jdiazcaballero/Downloads/nigeria-acinetobacter_bauminnii-01-illumina-R2.fastq.gz,,
+nigeria-acinetobacter_bauminnii-01,/mnt/e/Varun/fastqs/india-klebsiella_pneumoniae-G18250122-illumina-R1.fastq.gz,/mnt/e/Varun/fastqs/india-klebsiella_pneumoniae-G18250122-illumina-R2.fastq.gz,,3.9m
+nigeria-acinetobacter_bauminnii-01,/mnt/e/Varun/fastqs/india-klebsiella_pneumoniae-G18250122-illumina-R1.fastq.gz,/mnt/e/Varun/fastqs/india-klebsiella_pneumoniae-G18250122-illumina-R2.fastq.gz,,
