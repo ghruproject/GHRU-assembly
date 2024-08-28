@@ -1,6 +1,7 @@
 process ASSEMBLY_DRAGONFLYE{
 
     label 'dragonflye_container'
+    label 'process_high'
 
     tag { sample_id }
     
@@ -23,7 +24,7 @@ process ASSEMBLY_DRAGONFLYE{
     RAM="$assembler_ram"
     fasta="${sample_id}.flye_contigs.fasta"
     """
-    dragonflye --gsize $GSIZE --reads $LR --cpus $CPU --ram $RAM \
+    dragonflye --gsize $GSIZE --reads $LR --cpus $task.cpus --ram $task.memory \
     --prefix $sample_id --racon 1 --medaka 1 --model $medaka_model \
     --outdir "$sample_id" --force --keepfiles --depth 0
     mv "$sample_id"/"$sample_id".fa $fasta

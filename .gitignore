@@ -5,6 +5,7 @@ work
 *.png
 *.html
 *.dag
-*gunc*
 *check*
 *test*
+samplesheet.csv
+*.dmnd

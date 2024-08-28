@@ -1,16 +1,12 @@
 //import modules
-include { CALCULATE_GENOME_SIZE          } from '../modules/short_reads_preprocess'
-include { DETERMINE_MIN_READ_LENGTH      } from '../modules/short_reads_preprocess'
-include { TRIMMING                       } from '../modules/short_reads_preprocess'
-include { FASTQC                         } from '../modules/short_reads_preprocess'
-include { NANOPLOT                       } from '../modules/long_reads_preprocess'
-include { PORECHOP                       } from '../modules/long_reads_preprocess'
-include { ASSEMBLY_UNICYCLER             } from '../modules/hybrid_assemblers'
-include { QUAST_HY                       } from '../modules/quast'
-include { CHECKM_MARKERS                 } from '../modules/contamination'
-include { CONTAMINATION_CHECKM           } from '../modules/contamination'
-include { CONTAMINATION_GUNC             } from '../modules/contamination'
-include { COMBINE_CONTAMINATION_REPORTS  } from '../modules/contamination'
+include { CALCULATE_GENOME_SIZE       } from '../modules/short_reads_preprocess'
+include { DETERMINE_MIN_READ_LENGTH   } from '../modules/short_reads_preprocess'
+include { TRIMMING                    } from '../modules/short_reads_preprocess'
+include { FASTQC                      } from '../modules/short_reads_preprocess'
+include { NANOPLOT                    }  from '../modules/long_reads_preprocess'
+include { PORECHOP                    }  from '../modules/long_reads_preprocess'
+include { UNICYCLER                   }  from '../modules/hybrid_assemblers'
+include { QUAST_HY                    }  from '../modules/quast' 
 
 
 workflow HY_ASSEMBLY{
@@ -57,13 +53,17 @@ workflow HY_ASSEMBLY{
     ASSEMBLY_UNICYCLER(processed_short_reads, processed_long_reads, params.assembler_thread)
     QUAST_HY(ASSEMBLY_UNICYCLER.out)
 
+    //speciate with speciator
+    SPECIATION(UNICYCLER.out)
+
     //contamination check checkm
     CHECKM_MARKERS(params.genusNAME)
     CONTAMINATION_CHECKM(ASSEMBLY_UNICYCLER.out, CHECKM_MARKERS.out)
 
     //contamination check gunc
     CONTAMINATION_GUNC(ASSEMBLY_UNICYCLER.out, gunc_db)
-
     //Merge Checkm and Gunc Outputs using gunc-merge
     COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
+ 
+
  }

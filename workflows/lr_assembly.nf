@@ -1,13 +1,10 @@
 //import modules
-include { CALCULATE_GENOME_SIZE          } from '../modules/long_reads_preprocess'
-include { NANOPLOT                       } from '../modules/long_reads_preprocess'
-include { PORECHOP                       } from '../modules/long_reads_preprocess'
-include { ASSEMBLY_DRAGONFLYE            } from '../modules/long_read_assembly'
-include { QUAST_LR                       } from '../modules/quast'
-include { CHECKM_MARKERS                 } from '../modules/contamination'
-include { CONTAMINATION_CHECKM           } from '../modules/contamination'
-include { CONTAMINATION_GUNC             } from '../modules/contamination'
-include { COMBINE_CONTAMINATION_REPORTS  } from '../modules/contamination'
+include { CALCULATE_GENOME_SIZE       } from '../modules/long_reads_preprocess'
+include { NANOPLOT                    }  from '../modules/long_reads_preprocess'
+include { PORECHOP                    }  from '../modules/long_reads_preprocess'
+include { ASSEMBLY_DRAGONFLYE         } from '../modules/long_read_assembly'
+include { QUAST_LR                    } from '../modules/quast'
+
 
 workflow LR_ASSEMBLY{
 
@@ -40,7 +37,10 @@ workflow LR_ASSEMBLY{
     //assess assembly using quast
     QUAST_LR(ASSEMBLY_DRAGONFLYE.out)
 
-    //contamination check checkm
+    //speciate with speciator
+    SPECIATION(ASSEMBLY_DRAGONFLYE.out)
+    
+   //contamination check checkm
     CHECKM_MARKERS(params.genusNAME)
     CONTAMINATION_CHECKM(ASSEMBLY_DRAGONFLYE.out, CHECKM_MARKERS.out)
 
@@ -49,4 +49,5 @@ workflow LR_ASSEMBLY{
 
     //Merge Checkm and Gunc Outputs using gunc-merge
     COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
+
 }

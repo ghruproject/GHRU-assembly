@@ -1,11 +1,12 @@
 //import modules for the short read only assembly workflow
 
-include { CALCULATE_GENOME_SIZE          } from '../modules/short_reads_preprocess'
-include { DETERMINE_MIN_READ_LENGTH      } from '../modules/short_reads_preprocess'
-include { TRIMMING                       } from '../modules/short_reads_preprocess'
-include { FASTQC                         } from '../modules/short_reads_preprocess'
-include { ASSEMBLY_SHOVILL               } from '../modules/short_read_assembly'
-include { QUAST_SR                       } from '../modules/quast'
+include { CALCULATE_GENOME_SIZE       } from '../modules/short_reads_preprocess'
+include { DETERMINE_MIN_READ_LENGTH   } from '../modules/short_reads_preprocess'
+include { TRIMMING                    } from '../modules/short_reads_preprocess'
+include { FASTQC                      } from '../modules/short_reads_preprocess'
+include { ASSEMBLY_SHOVILL            } from '../modules/short_read_assembly'
+include { QUAST_SR                    } from '../modules/quast'
+include { SPECIATION                  }  from '../modules/speciation' 
 include { CHECKM_MARKERS                 } from '../modules/contamination'
 include { CONTAMINATION_CHECKM           } from '../modules/contamination'
 include { CONTAMINATION_GUNC             } from '../modules/contamination'
@@ -41,10 +42,13 @@ workflow SR_ASSEMBLY{
     FASTQC(processed_short_reads)
 
     //do assembly using shovill
-    ASSEMBLY_SHOVILL(processed_short_reads, params.min_contig_length, params.assembler_thread)
+    ASSEMBLY_SHOVILL(processed_short_reads, params.min_contig_length, params.assembler_thread, params.assembler_ram)
     
     //assess assembly using quast
     QUAST_SR (ASSEMBLY_SHOVILL.out)
+
+    //speciate with speciator
+    SPECIATION(ASSEMBLY_SHOVILL.out)
 
     //contamination check checkm
     CHECKM_MARKERS(params.genusNAME)
@@ -55,4 +59,5 @@ workflow SR_ASSEMBLY{
 
     //Merge Checkm and Gunc Outputs using gunc-merge
     COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
+
 }
