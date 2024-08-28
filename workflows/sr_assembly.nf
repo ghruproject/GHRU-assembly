@@ -7,6 +7,10 @@ include { FASTQC                      } from '../modules/short_reads_preprocess'
 include { ASSEMBLY_SHOVILL            } from '../modules/short_read_assembly'
 include { QUAST_SR                    } from '../modules/quast'
 include { SPECIATION                  }  from '../modules/speciation' 
+include { CHECKM_MARKERS                 } from '../modules/contamination'
+include { CONTAMINATION_CHECKM           } from '../modules/contamination'
+include { CONTAMINATION_GUNC             } from '../modules/contamination'
+include { COMBINE_CONTAMINATION_REPORTS  } from '../modules/contamination'
 
 
 workflow SR_ASSEMBLY{
@@ -16,6 +20,8 @@ workflow SR_ASSEMBLY{
     //take the short reads read channel from the main
     srt_reads
 
+    //take the guncDB path from main
+    gunc_db
 
     //main workflow for short read assembly
     main:
@@ -43,4 +49,15 @@ workflow SR_ASSEMBLY{
 
     //speciate with speciator
     SPECIATION(ASSEMBLY_SHOVILL.out)
+
+    //contamination check checkm
+    CHECKM_MARKERS(params.genusNAME)
+    CONTAMINATION_CHECKM(ASSEMBLY_SHOVILL.out, CHECKM_MARKERS.out)
+
+    //contamination check gunc
+    CONTAMINATION_GUNC(ASSEMBLY_SHOVILL.out, gunc_db)
+
+    //Merge Checkm and Gunc Outputs using gunc-merge
+    COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
+
 }

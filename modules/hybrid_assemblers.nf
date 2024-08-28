@@ -1,4 +1,4 @@
-process UNICYCLER{
+process ASSEMBLY_UNICYCLER{
     label 'unicycler_container'
     label 'process_high'
 

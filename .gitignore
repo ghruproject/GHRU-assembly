@@ -2,7 +2,10 @@
 work
 *out*
 *input*
-*.dag
 *.png
+*.html
+*.dag
+*check*
+*test*
 samplesheet.csv
 *.dmnd

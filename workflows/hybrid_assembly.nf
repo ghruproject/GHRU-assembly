@@ -8,7 +8,10 @@ include { PORECHOP                    }  from '../modules/long_reads_preprocess'
 include { UNICYCLER                   }  from '../modules/hybrid_assemblers'
 include { QUAST_HY                    }  from '../modules/quast' 
 include { SPECIATION                  }  from '../modules/speciation' 
-
+include { CHECKM_MARKERS                 } from '../modules/contamination'
+include { CONTAMINATION_CHECKM           } from '../modules/contamination'
+include { CONTAMINATION_GUNC             } from '../modules/contamination'
+include { COMBINE_CONTAMINATION_REPORTS  } from '../modules/contamination'
 
 workflow HY_ASSEMBLY{
 
@@ -20,6 +23,8 @@ workflow HY_ASSEMBLY{
     //take long reads from hybrid channel
     hyb_lng_reads
 
+    //take the guncDB path from main
+    gunc_db
 
     //main workflow for hybrid assembly
     main: 
@@ -49,10 +54,20 @@ workflow HY_ASSEMBLY{
     processed_long_reads= PORECHOP.out.long_reads
 
     //hybrid assembly with unicycler
-    UNICYCLER(processed_short_reads, processed_long_reads, params.assembler_thread)
-
-    QUAST_HY(UNICYCLER.out)
+    ASSEMBLY_UNICYCLER(processed_short_reads, processed_long_reads, params.assembler_thread)
+    QUAST_HY(ASSEMBLY_UNICYCLER.out)
 
     //speciate with speciator
     SPECIATION(UNICYCLER.out)
+
+    //contamination check checkm
+    CHECKM_MARKERS(params.genusNAME)
+    CONTAMINATION_CHECKM(ASSEMBLY_UNICYCLER.out, CHECKM_MARKERS.out)
+
+    //contamination check gunc
+    CONTAMINATION_GUNC(ASSEMBLY_UNICYCLER.out, gunc_db)
+    //Merge Checkm and Gunc Outputs using gunc-merge
+    COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
+ 
+
  }

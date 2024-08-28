@@ -79,8 +79,7 @@ void printSelectedParameters() {
         Output Directory:  ${params.output}
         Threads:           ${params.assembler_thread}
         RAM:               ${params.assembler_ram}
-        Kraken2 Database:  ${params.kraken_db ?: 'Not Provided'}
-        ConFindr Database: ${params.confindr_db ?: 'Not Provided'}
+        GUNC Database:     ${params.gunc_db ?: 'Not Provided'}
         Adapter File:      ${params.adapter_file ?: 'Not Provided'}
         MedakaModel:       ${params.medaka_model}
       """.stripMargin()
