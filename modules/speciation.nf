@@ -20,8 +20,12 @@ process SPECIATION {
     python3 /speciator.py ${fasta_file} /libraries /bactinspector/data/taxon_info.pqt > "${sample_id}_speciator_output.json"
     species_name=\$(cat "${sample_id}_speciator_output.json" | jq -r '.speciesName')
 
-    # write to report
-    echo "Sample_id\tSpecies" > ${species_report}
-    echo "${sample_id}\t\${species_name}" >> ${species_report}
+    # Extract keys (header) and values from JSON
+    keys=\$(jq -r 'keys_unsorted | @tsv' "${sample_id}_speciator_output.json")
+    values=\$(jq -r '[.[]] | @tsv' "${sample_id}_speciator_output.json")
+    
+    # Write header and values to the TSV file
+    echo -e "Sample_id\t\${keys}" > ${species_report}
+    echo -e "${sample_id}\t\${values}" >> ${species_report}
     """
 }
