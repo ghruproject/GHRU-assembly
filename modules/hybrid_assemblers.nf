@@ -1,4 +1,4 @@
-process UNICYCLER{
+process ASSEMBLY_UNICYCLER{
     label 'unicycler_container'
 
     publishDir "${params.output}/hybrid_assemblies", mode: 'copy', pattern: '*.fasta'
