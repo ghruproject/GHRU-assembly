@@ -54,18 +54,18 @@ workflow HY_ASSEMBLY{
     processed_long_reads= PORECHOP.out.long_reads
 
     //hybrid assembly with unicycler
-    ASSEMBLY_UNICYCLER(processed_short_reads, processed_long_reads, params.assembler_thread)
-    QUAST_HY(ASSEMBLY_UNICYCLER.out)
+    UNICYCLER(processed_short_reads, processed_long_reads, params.assembler_thread)
+    QUAST_HY(UNICYCLER.out)
 
     //speciate with speciator
     SPECIATION(UNICYCLER.out)
 
     //contamination check checkm
     CHECKM_MARKERS(params.genusNAME)
-    CONTAMINATION_CHECKM(ASSEMBLY_UNICYCLER.out, CHECKM_MARKERS.out)
+    CONTAMINATION_CHECKM(UNICYCLER.out, CHECKM_MARKERS.out)
 
     //contamination check gunc
-    CONTAMINATION_GUNC(ASSEMBLY_UNICYCLER.out, gunc_db)
+    CONTAMINATION_GUNC(UNICYCLER.out, gunc_db)
     //Merge Checkm and Gunc Outputs using gunc-merge
     COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
  
