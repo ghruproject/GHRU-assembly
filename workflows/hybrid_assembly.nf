@@ -70,5 +70,6 @@ workflow HY_ASSEMBLY{
     //Merge Checkm and Gunc Outputs using gunc-merge
     //COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
  
-
+    //Consolidate all reports
+    COMBINE_REPORTS(QUAST.out, SPECIATION.out, CONTAMINATION_CHECKM.out, "hybrid")
  }

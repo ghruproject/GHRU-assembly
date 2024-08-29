@@ -11,6 +11,7 @@ include { CHECKM_MARKERS                 } from '../modules/contamination'
 include { CONTAMINATION_CHECKM           } from '../modules/contamination'
 include { CONTAMINATION_GUNC             } from '../modules/contamination'
 include { COMBINE_CONTAMINATION_REPORTS  } from '../modules/contamination'
+include { COMBINE_REPORTS                } from '../modules/combine_reports'
 
 
 workflow SR_ASSEMBLY{
@@ -60,4 +61,6 @@ workflow SR_ASSEMBLY{
     //Merge Checkm and Gunc Outputs using gunc-merge
     //COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
 
+    //Consolidate all reports
+    COMBINE_REPORTS(QUAST.out, SPECIATION.out, CONTAMINATION_CHECKM.out, "short")
 }
