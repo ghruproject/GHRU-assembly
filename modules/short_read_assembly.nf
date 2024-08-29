@@ -7,7 +7,7 @@ process ASSEMBLY_SHOVILL {
 
     tag "$sample_id"
 
-    publishDir "${params.output}/short_read_assemblies", mode: 'copy'
+    publishDir "${params.output}/assemblies", mode: 'copy', pattern: '*.short.fasta'
 
     input:
     tuple val(sample_id), path(short_reads1), path(short_reads2), val(genome_size)
@@ -19,7 +19,7 @@ process ASSEMBLY_SHOVILL {
     tuple val(sample_id), path(fasta)
 
     script:
-    fasta="${sample_id}.contigs.fasta"
+    fasta="${sample_id}.short.fasta"
     """  
     shovill --R1 $short_reads1 --R2 $short_reads2 --outdir results --cpus $task.cpus --ram $task.memory --minlen $min_contig_length --force
     mv results/contigs.fa $fasta

@@ -5,7 +5,7 @@ include { DETERMINE_MIN_READ_LENGTH   } from '../modules/short_reads_preprocess'
 include { TRIMMING                    } from '../modules/short_reads_preprocess'
 include { FASTQC                      } from '../modules/short_reads_preprocess'
 include { ASSEMBLY_SHOVILL            } from '../modules/short_read_assembly'
-include { QUAST_SR                    } from '../modules/quast'
+include { QUAST                       } from '../modules/quast'
 include { SPECIATION                  }  from '../modules/speciation' 
 include { CHECKM_MARKERS                 } from '../modules/contamination'
 include { CONTAMINATION_CHECKM           } from '../modules/contamination'
@@ -45,19 +45,19 @@ workflow SR_ASSEMBLY{
     ASSEMBLY_SHOVILL(processed_short_reads, params.min_contig_length, params.assembler_thread, params.assembler_ram)
     
     //assess assembly using quast
-    QUAST_SR (ASSEMBLY_SHOVILL.out)
+    QUAST (ASSEMBLY_SHOVILL.out, "short")
 
     //speciate with speciator
-    SPECIATION(ASSEMBLY_SHOVILL.out)
+    SPECIATION(ASSEMBLY_SHOVILL.out, "short")
 
     //contamination check checkm
     CHECKM_MARKERS(params.genusNAME)
     CONTAMINATION_CHECKM(ASSEMBLY_SHOVILL.out, CHECKM_MARKERS.out)
 
     //contamination check gunc
-    CONTAMINATION_GUNC(ASSEMBLY_SHOVILL.out, gunc_db)
+    //CONTAMINATION_GUNC(ASSEMBLY_SHOVILL.out, gunc_db)
 
     //Merge Checkm and Gunc Outputs using gunc-merge
-    COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
+    //COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
 
 }

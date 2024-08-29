@@ -48,7 +48,7 @@ process TRIMMING{
 
     tag "$sample_id"
 
-    publishDir "${params.output}/processed_short_reads", mode: 'copy'
+    //publishDir "${params.output}/processed_short_reads", mode: 'copy'
 
     input:
     tuple val(sample_id), path(short_reads1), path(short_reads2), val(genome_size)
