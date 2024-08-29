@@ -46,7 +46,7 @@ workflow LR_ASSEMBLY{
     
    //contamination check checkm
     CHECKM_MARKERS(params.genusNAME)
-    CONTAMINATION_CHECKM(ASSEMBLY_DRAGONFLYE.out, CHECKM_MARKERS.out)
+    CONTAMINATION_CHECKM(ASSEMBLY_DRAGONFLYE.out, CHECKM_MARKERS.out,"long")
 
     //contamination check gunc
     //CONTAMINATION_GUNC(ASSEMBLY_DRAGONFLYE.out, gunc_db)

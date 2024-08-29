@@ -52,7 +52,7 @@ workflow SR_ASSEMBLY{
 
     //contamination check checkm
     CHECKM_MARKERS(params.genusNAME)
-    CONTAMINATION_CHECKM(ASSEMBLY_SHOVILL.out, CHECKM_MARKERS.out)
+    CONTAMINATION_CHECKM(ASSEMBLY_SHOVILL.out, CHECKM_MARKERS.out, "short")
 
     //contamination check gunc
     //CONTAMINATION_GUNC(ASSEMBLY_SHOVILL.out, gunc_db)

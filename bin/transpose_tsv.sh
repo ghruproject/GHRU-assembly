@@ -1,0 +1,2 @@
+#!/bin/bash
+awk 'BEGIN { FS="\t"; OFS="\t" } { for (i=1; i<=NF; i++) { a[i,NR]=$i } } NF>p { p=NF } END { for(j=1; j<=p; j++) { str=a[j,1]; for(i=2; i<=NR; i++) { str=str OFS a[j,i]; } print str } }' $1

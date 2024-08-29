@@ -62,7 +62,7 @@ workflow HY_ASSEMBLY{
 
     //contamination check checkm
     CHECKM_MARKERS(params.genusNAME)
-    CONTAMINATION_CHECKM(UNICYCLER.out, CHECKM_MARKERS.out)
+    CONTAMINATION_CHECKM(UNICYCLER.out, CHECKM_MARKERS.out, "hybrid")
 
     //contamination check gunc
     //CONTAMINATION_GUNC(UNICYCLER.out, gunc_db)
