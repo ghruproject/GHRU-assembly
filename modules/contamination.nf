@@ -24,22 +24,27 @@ process CONTAMINATION_CHECKM {
 
     tag { sample_id }
 
+    publishDir "${params.output}/checkm_summary", mode: 'copy', pattern: "*.tsv"
+
     input:
     tuple val(sample_id), path(fasta)
     path(marker_file)
+    val(type)
 
     output:
-    tuple val(sample_id), path(checkm_qa_out)
+    tuple val(sample_id), path(report)
 
     script:
     fasta="${fasta}"
     marker_file="${marker_file}"
     outdir="checkm_out"
     checkm_qa_out="checkm_qa_out.tsv"
+    report="${sample_id}.${type}.tsv"
 
     """
     checkm analyze $marker_file -x fasta . $outdir
-    checkm qa -f $checkm_qa_out -o 2 --tab_table $marker_file $outdir 
+    checkm qa -f $checkm_qa_out -o 2 --tab_table $marker_file $outdir
+    mv ${checkm_qa_out} ${report}
     """
 }
 

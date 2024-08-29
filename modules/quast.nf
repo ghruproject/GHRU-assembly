@@ -16,7 +16,7 @@ process QUAST {
     report="${sample_id}.${type}.tsv"
     """
     quast.py -o results "$assembly"
-    mv results/report.tsv $report
+    bash transpose_tsv.sh results/report.tsv > ${report}
     """
 }
 

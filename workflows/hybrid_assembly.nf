@@ -24,7 +24,7 @@ workflow HY_ASSEMBLY{
     hyb_lng_reads
 
     //take the guncDB path from main
-    gunc_db
+    //gunc_db
 
     //main workflow for hybrid assembly
     main: 
@@ -62,7 +62,7 @@ workflow HY_ASSEMBLY{
 
     //contamination check checkm
     CHECKM_MARKERS(params.genusNAME)
-    CONTAMINATION_CHECKM(UNICYCLER.out, CHECKM_MARKERS.out)
+    CONTAMINATION_CHECKM(UNICYCLER.out, CHECKM_MARKERS.out, "hybrid")
 
     //contamination check gunc
     //CONTAMINATION_GUNC(UNICYCLER.out, gunc_db)
@@ -70,5 +70,6 @@ workflow HY_ASSEMBLY{
     //Merge Checkm and Gunc Outputs using gunc-merge
     //COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
  
-
+    //Consolidate all reports
+    COMBINE_REPORTS(QUAST.out, SPECIATION.out, CONTAMINATION_CHECKM.out, "hybrid")
  }

@@ -62,15 +62,15 @@ if (params.help) {
         .set { hyb_lng_reads }
 
         //download the guncDB for contamination check
-        GATHER_GUNC_DB(params.gunc_db)
+        //GATHER_GUNC_DB(params.gunc_db)
 
         //run short read assembly workflow
-        SR_ASSEMBLY (srt_reads, GATHER_GUNC_DB.out)
+        SR_ASSEMBLY (srt_reads)
 
         //run long read assembly workflow
-        LR_ASSEMBLY (lng_reads, GATHER_GUNC_DB.out)
+        LR_ASSEMBLY (lng_reads)
     
         //run hybrid assembly workflow
-        HY_ASSEMBLY(hyb_srt_reads, hyb_lng_reads, GATHER_GUNC_DB.out)
+        HY_ASSEMBLY(hyb_srt_reads, hyb_lng_reads)
     }
 }

@@ -78,7 +78,7 @@ process FASTQC{
 
     tag "$sample_id"
 
-    publishDir "${params.output}/Post_trimming_QC_short_reads", mode: 'copy'
+    publishDir "${params.output}/post_trimming_short_read_stats", mode: 'copy'
 
     input:
     tuple val(sample_id), path(short_reads1), path(short_reads2), val(genome_size)
