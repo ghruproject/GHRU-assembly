@@ -24,7 +24,7 @@ workflow HY_ASSEMBLY{
     hyb_lng_reads
 
     //take the guncDB path from main
-    gunc_db
+    //gunc_db
 
     //main workflow for hybrid assembly
     main: 

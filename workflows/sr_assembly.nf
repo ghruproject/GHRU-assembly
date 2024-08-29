@@ -21,7 +21,7 @@ workflow SR_ASSEMBLY{
     srt_reads
 
     //take the guncDB path from main
-    gunc_db
+    //gunc_db
 
     //main workflow for short read assembly
     main:

@@ -18,7 +18,7 @@ workflow LR_ASSEMBLY{
     lng_reads
 
     //take the guncDB path from main
-    gunc_db
+    //gunc_db
 
     //main workflow for long read assembly
     main:
