@@ -55,10 +55,10 @@ workflow HY_ASSEMBLY{
 
     //hybrid assembly with unicycler
     UNICYCLER(processed_short_reads, processed_long_reads, params.assembler_thread)
-    QUAST(UNICYCLER.out)
+    QUAST(UNICYCLER.out, "hybrid")
 
     //speciate with speciator
-    SPECIATION(UNICYCLER.out)
+    SPECIATION(UNICYCLER.out, "hybrid")
 
     //contamination check checkm
     CHECKM_MARKERS(params.genusNAME)

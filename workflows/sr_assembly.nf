@@ -45,10 +45,10 @@ workflow SR_ASSEMBLY{
     ASSEMBLY_SHOVILL(processed_short_reads, params.min_contig_length, params.assembler_thread, params.assembler_ram)
     
     //assess assembly using quast
-    QUAST (ASSEMBLY_SHOVILL.out)
+    QUAST (ASSEMBLY_SHOVILL.out, "short")
 
     //speciate with speciator
-    SPECIATION(ASSEMBLY_SHOVILL.out)
+    SPECIATION(ASSEMBLY_SHOVILL.out, "short")
 
     //contamination check checkm
     CHECKM_MARKERS(params.genusNAME)

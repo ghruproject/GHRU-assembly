@@ -39,10 +39,10 @@ workflow LR_ASSEMBLY{
     ASSEMBLY_DRAGONFLYE(preprocessed_long_reads, params.medaka_model, params.assembler_thread, params.assembler_ram)
 
     //assess assembly using quast
-    QUAST(ASSEMBLY_DRAGONFLYE.out)
+    QUAST(ASSEMBLY_DRAGONFLYE.out, "long")
 
     //speciate with speciator
-    SPECIATION(ASSEMBLY_DRAGONFLYE.out)
+    SPECIATION(ASSEMBLY_DRAGONFLYE.out, "long")
     
    //contamination check checkm
     CHECKM_MARKERS(params.genusNAME)
