@@ -6,7 +6,7 @@ include { FASTQC                      } from '../modules/short_reads_preprocess'
 include { NANOPLOT                    }  from '../modules/long_reads_preprocess'
 include { PORECHOP                    }  from '../modules/long_reads_preprocess'
 include { UNICYCLER                   }  from '../modules/hybrid_assemblers'
-include { QUAST_HY                    }  from '../modules/quast' 
+include { QUAST                       }  from '../modules/quast' 
 include { SPECIATION                  }  from '../modules/speciation' 
 include { CHECKM_MARKERS                 } from '../modules/contamination'
 include { CONTAMINATION_CHECKM           } from '../modules/contamination'
@@ -55,7 +55,7 @@ workflow HY_ASSEMBLY{
 
     //hybrid assembly with unicycler
     UNICYCLER(processed_short_reads, processed_long_reads, params.assembler_thread)
-    QUAST_HY(UNICYCLER.out)
+    QUAST(UNICYCLER.out)
 
     //speciate with speciator
     SPECIATION(UNICYCLER.out)
@@ -65,9 +65,10 @@ workflow HY_ASSEMBLY{
     CONTAMINATION_CHECKM(UNICYCLER.out, CHECKM_MARKERS.out)
 
     //contamination check gunc
-    CONTAMINATION_GUNC(UNICYCLER.out, gunc_db)
+    //CONTAMINATION_GUNC(UNICYCLER.out, gunc_db)
+
     //Merge Checkm and Gunc Outputs using gunc-merge
-    COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
+    //COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
  
 
  }

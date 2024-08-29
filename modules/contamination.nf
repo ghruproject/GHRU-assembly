@@ -20,6 +20,7 @@ process CHECKM_MARKERS {
 
 process CONTAMINATION_CHECKM {
     label 'checkm_container'
+    label 'process_medium'
 
     tag { sample_id }
 
@@ -66,6 +67,7 @@ process GATHER_GUNC_DB {
 
 process CONTAMINATION_GUNC {
     label 'gunc_container'
+    label 'process_medium'
 
     tag { sample_id }
 

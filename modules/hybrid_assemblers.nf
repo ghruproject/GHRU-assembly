@@ -2,7 +2,7 @@ process UNICYCLER{
     label 'unicycler_container'
     label 'process_high'
 
-    publishDir "${params.output}/hybrid_assemblies", mode: 'copy', pattern: '*.fasta'
+    publishDir "${params.output}/assemblies", mode: 'copy', pattern: '*.hybrid.fasta'
 
     tag { sample_id }
 
@@ -19,7 +19,7 @@ process UNICYCLER{
     read_two="${short_reads2}"
     LR="${long_reads}"
     CPU="${assembler_thread}"
-    fasta="${sample_id}-unicycler-contigs.fasta"
+    fasta="${sample_id}.hybrid.fasta"
 
     """
     unicycler --threads $task.cpus -1 $read_one -2 $read_two -l $LR -o unicycler_out
