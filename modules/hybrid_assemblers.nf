@@ -9,7 +9,6 @@ process UNICYCLER{
     input:
     tuple val(sample_id), path(short_reads1), path(short_reads2), val(genome_size)
     path(long_reads)
-    val(assembler_thread)
 
     output:
     tuple val(sample_id), path(fasta)
@@ -18,7 +17,6 @@ process UNICYCLER{
     read_one="${short_reads1}"
     read_two="${short_reads2}"
     LR="${long_reads}"
-    CPU="${assembler_thread}"
     fasta="${sample_id}.hybrid.fasta"
 
     """

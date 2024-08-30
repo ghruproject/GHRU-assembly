@@ -43,7 +43,7 @@ workflow SR_ASSEMBLY{
     FASTQC(processed_short_reads)
 
     //do assembly using shovill
-    ASSEMBLY_SHOVILL(processed_short_reads, params.min_contig_length, params.assembler_thread, params.assembler_ram)
+    ASSEMBLY_SHOVILL(processed_short_reads, params.min_contig_length)
     
     //assess assembly using quast
     QUAST (ASSEMBLY_SHOVILL.out, "short")

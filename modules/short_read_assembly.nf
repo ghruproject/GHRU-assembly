@@ -12,8 +12,6 @@ process ASSEMBLY_SHOVILL {
     input:
     tuple val(sample_id), path(short_reads1), path(short_reads2), val(genome_size)
     val min_contig_length
-    val assembler_thread
-    val assembler_ram
 
     output:
     tuple val(sample_id), path(fasta)

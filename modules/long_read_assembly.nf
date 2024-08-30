@@ -10,8 +10,6 @@ process ASSEMBLY_DRAGONFLYE{
     input:
     tuple val(sample_id), path(long_reads), val(genome_size)
     val(medaka_model)
-    val(assembler_thread)
-    val(assembler_ram)
 
     output:
     tuple val(sample_id), path(fasta)
@@ -20,8 +18,6 @@ process ASSEMBLY_DRAGONFLYE{
     script:
     LR="$long_reads"
     GSIZE="$genome_size"
-    CPU="$assembler_thread"
-    RAM="$assembler_ram"
     fasta="${sample_id}.long.fasta"
     """
     dragonflye --gsize $GSIZE --reads $LR --cpus $task.cpus --ram $task.memory \

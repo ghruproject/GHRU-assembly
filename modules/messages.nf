@@ -37,20 +37,15 @@ void helpMessage() {
         This pipeline performs short-read, long-read, and hybrid genome assemblies.
 
         USAGE:
-            nextflow run assembly_pipeline.nf --input <input_file> --output <output_directory> [options]
+            nextflow run assembly_pipeline.nf --samplesheet <input_file> --output <output_directory> [options]
 
         MANDATORY PARAMETERS:
-            --input <input_file>        Path to the input samplesheet file containing information about the samples.
-            --output <output_directory> Directory where the output files will be saved.
+            --samplesheet <input_file>   Path to the input samplesheet file containing information about the samples.
+            --output <output_directory>  Directory where the output files will be saved.
 
         OPTIONAL PARAMETERS:
-            --genome_size <size>         Estimated genome size (e.g., 5m for 500000).
-            --kraken_db <path>           Path to the Kraken2 database for taxonomic classification.
-            --confindr_db <path>         Path to the ConFindr database for contamination detection.
             --adapter_file <path>        Path to the adapter file for read trimming.
             --min_contig_length <num>    minimum contig length
-            --assembler_thread <num>     Number of threads to use for the assembly (default: 8).
-            --assembler_ram <num>        RAM to use for the assembly (default: 16).
             --medaka_model <model>       Medaka model to be 
 
 
@@ -77,8 +72,6 @@ void printSelectedParameters() {
 
         Input File:        ${params.samplesheet}
         Output Directory:  ${params.output}
-        Threads:           ${params.assembler_thread}
-        RAM:               ${params.assembler_ram}
         GUNC Database:     ${params.gunc_db ?: 'Not Provided'}
         Adapter File:      ${params.adapter_file ?: 'Not Provided'}
         MedakaModel:       ${params.medaka_model}

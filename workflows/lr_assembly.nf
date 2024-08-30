@@ -1,10 +1,10 @@
 //import modules
-include { CALCULATE_GENOME_SIZE       } from '../modules/long_reads_preprocess'
-include { NANOPLOT                    }  from '../modules/long_reads_preprocess'
-include { PORECHOP                    }  from '../modules/long_reads_preprocess'
-include { ASSEMBLY_DRAGONFLYE         } from '../modules/long_read_assembly'
-include { QUAST                       } from '../modules/quast'
-include { SPECIATION                  }  from '../modules/speciation' 
+include { CALCULATE_GENOME_SIZE          } from '../modules/long_reads_preprocess'
+include { NANOPLOT                       }  from '../modules/long_reads_preprocess'
+include { PORECHOP                       }  from '../modules/long_reads_preprocess'
+include { ASSEMBLY_DRAGONFLYE            } from '../modules/long_read_assembly'
+include { QUAST                          } from '../modules/quast'
+include { SPECIATION                     }  from '../modules/speciation' 
 include { CHECKM_MARKERS                 } from '../modules/contamination'
 include { CONTAMINATION_CHECKM           } from '../modules/contamination'
 include { CONTAMINATION_GUNC             } from '../modules/contamination'
@@ -28,16 +28,16 @@ workflow LR_ASSEMBLY{
     read_with_genome_size = CALCULATE_GENOME_SIZE(lng_reads)
 
     //do nanoplot of the long reads
-    NANOPLOT(read_with_genome_size, params.assembler_thread)
+    NANOPLOT(read_with_genome_size)
 
     //trim adapters with porechop
-    PORECHOP(read_with_genome_size, params.assembler_thread)
+    PORECHOP(read_with_genome_size)
     
     //processed_long_read assembly channel
     preprocessed_long_reads=PORECHOP.out.long_read_assembly
 
     //do long read assembly with dragonflye
-    ASSEMBLY_DRAGONFLYE(preprocessed_long_reads, params.medaka_model, params.assembler_thread, params.assembler_ram)
+    ASSEMBLY_DRAGONFLYE(preprocessed_long_reads, params.medaka_model)
 
     //assess assembly using quast
     QUAST(ASSEMBLY_DRAGONFLYE.out, "long")
