@@ -17,10 +17,10 @@ def main(samplesheet):
             seen_sample_ids.add(sample_id)
 
             # Check if the files exist
-            for field in ['short_reads1', 'short_reads2', 'long_reads']:
-                file_path = row.get(field)
-                if file_path and not os.path.exists(file_path):
-                    sys.exit(f"Error: File '{file_path}' for sample '{sample_id}' does not exist.")
+            #for field in ['short_reads1', 'short_reads2', 'long_reads']:
+            #    file_path = row.get(field)
+            #    if file_path and not os.path.exists(file_path):
+            #        sys.exit(f"Error: File '{file_path}' for sample '{sample_id}' does not exist.")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
