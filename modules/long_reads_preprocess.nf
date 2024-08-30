@@ -31,14 +31,12 @@ process NANOPLOT {
 
     input:
     tuple val(sample_id), path(long_reads), val(genome_size)
-    val(assembler_thread)
 
     output:
     tuple val(sample_id), path("*.html"), emit: html
 
     script:
     LR="${long_reads}"
-    CPU="${assembler_thread}"
 
     """
     NanoPlot --fastq $LR -t $task.cpus -o nanoplot_out --no_static
@@ -59,7 +57,6 @@ process PORECHOP{
 
     input:
     tuple val(sample_id), path(long_reads), val(genome_size)
-    val(assembler_thread)
 
     output:
     tuple val(sample_id), path(preprocessed_ont), val(genome_size), emit: long_read_assembly
@@ -68,8 +65,8 @@ process PORECHOP{
     script:
     
     LR="${long_reads}"
-    CPU="${assembler_thread}"
     preprocessed_ont="preprocessed-${sample_id}-ont.fastq.gz"
+
     """
     porechop -i $LR -o $preprocessed_ont -t $task.cpus
     """

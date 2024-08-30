@@ -66,7 +66,7 @@ process TRIMMING{
     processed_two="processed-${sample_id}_2.fastq.gz"
 
     """
-    trimmomatic PE -threads 4 -phred33 $read_one $read_two $processed_one /dev/null $processed_two /dev/null ILLUMINACLIP:adapter_file.fas:2:30:10 SLIDINGWINDOW:4:20 LEADING:25 TRAILING:25 MINLEN:${min_read_length}  
+    trimmomatic PE -threads $task.cpus -phred33 $read_one $read_two $processed_one /dev/null $processed_two /dev/null ILLUMINACLIP:adapter_file.fas:2:30:10 SLIDINGWINDOW:4:20 LEADING:25 TRAILING:25 MINLEN:${min_read_length}  
     """
 }
 

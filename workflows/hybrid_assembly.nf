@@ -1,13 +1,13 @@
 //import modules
-include { CALCULATE_GENOME_SIZE       } from '../modules/short_reads_preprocess'
-include { DETERMINE_MIN_READ_LENGTH   } from '../modules/short_reads_preprocess'
-include { TRIMMING                    } from '../modules/short_reads_preprocess'
-include { FASTQC                      } from '../modules/short_reads_preprocess'
-include { NANOPLOT                    }  from '../modules/long_reads_preprocess'
-include { PORECHOP                    }  from '../modules/long_reads_preprocess'
-include { UNICYCLER                   }  from '../modules/hybrid_assemblers'
-include { QUAST                       }  from '../modules/quast' 
-include { SPECIATION                  }  from '../modules/speciation' 
+include { CALCULATE_GENOME_SIZE          } from '../modules/short_reads_preprocess'
+include { DETERMINE_MIN_READ_LENGTH      } from '../modules/short_reads_preprocess'
+include { TRIMMING                       } from '../modules/short_reads_preprocess'
+include { FASTQC                         } from '../modules/short_reads_preprocess'
+include { NANOPLOT                       }  from '../modules/long_reads_preprocess'
+include { PORECHOP                       }  from '../modules/long_reads_preprocess'
+include { UNICYCLER                      }  from '../modules/hybrid_assemblers'
+include { QUAST                          }  from '../modules/quast' 
+include { SPECIATION                     }  from '../modules/speciation' 
 include { CHECKM_MARKERS                 } from '../modules/contamination'
 include { CONTAMINATION_CHECKM           } from '../modules/contamination'
 include { CONTAMINATION_GUNC             } from '../modules/contamination'
@@ -46,16 +46,18 @@ workflow HY_ASSEMBLY{
     FASTQC(processed_short_reads)
 
     //qc of long reads using nanoplot
-    NANOPLOT(hyb_lng_reads, params.assembler_thread)
+    NANOPLOT(hyb_lng_reads)
 
     //trim adapters using porechop
-    PORECHOP(hyb_lng_reads, params.assembler_thread)
+    PORECHOP(hyb_lng_reads)
 
     //create only long reads channel
     processed_long_reads= PORECHOP.out.long_reads
 
     //hybrid assembly with unicycler
-    UNICYCLER(processed_short_reads, processed_long_reads, params.assembler_thread)
+    UNICYCLER(processed_short_reads, processed_long_reads)
+
+    //run quast for assessing assembly
     QUAST(UNICYCLER.out, "hybrid")
 
     //speciate with speciator
