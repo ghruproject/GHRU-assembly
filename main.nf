@@ -11,10 +11,11 @@ include { startMessage; helpMessage; printSelectedParameters } from "$projectDir
 startMessage(pipelineVersion)
 
 //include subworkflows for short, long and hybrid assemblies
-include { SR_ASSEMBLY     } from './workflows/sr_assembly'
-include { LR_ASSEMBLY     } from './workflows/lr_assembly'
-include { HY_ASSEMBLY     } from './workflows/hybrid_assembly'
-include { GATHER_GUNC_DB  } from './modules/contamination'
+include { SR_ASSEMBLY          } from './workflows/sr_assembly'
+include { LR_ASSEMBLY          } from './workflows/lr_assembly'
+include { HY_ASSEMBLY          } from './workflows/hybrid_assembly'
+include { GATHER_GUNC_DB       } from './modules/contamination'
+include { VALIDATE_SAMPLESHEET } from './modules/validatesamplesheet.nf'
 
 if (params.help) {
         helpMessage()
@@ -28,10 +29,12 @@ if (params.help) {
 
     //start the actual workflow
     workflow{
-        
+
+        // Run the validation step
+        validated_samplesheet_ch = VALIDATE_SAMPLESHEET(params.samplesheet)
+     
         // Evaluates the samplesheet and classifies the samples
-        Channel
-            .fromPath( params.samplesheet )
+        validated_samplesheet_ch
             .splitCsv( header: true, sep: ',' )
             .branch { row ->
                  srt: row.long_reads == "" && row.short_reads1 != "" && row.short_reads2 != ""
