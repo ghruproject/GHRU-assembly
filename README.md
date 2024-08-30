@@ -6,13 +6,13 @@
 
 The GHRU Assembly Pipeline (version 3.0) is designed for assembling genomic data based on a provided samplesheet. The pipeline supports different assemblers depending on the type of sequencing reads provided. 
 
-The pipeline is build as parth of GHRU project funded by NIHR.
+The pipeline is built as parth of GHRU project funded by NIHR.
 
 ### Authors
-Julio Diaz Caballero     @juliofdiaz       <julio.diaz@cgps.group>  
-Varun Shammana           @varunshamanna    <varunshamanna4@gmail.com>  
-Angela Sofia Garcia      @as-garciav       <agarciav@agrosavia.co>
-Christopher Ocampo       @arsp-dev         <christopher.ocampo@ritm.gov.ph> 
+ - Julio Diaz Caballero     @juliofdiaz       <julio.diaz@cgps.group>  
+ - Varun Shammana           @varunshamanna    <varunshamanna4@gmail.com>  
+ - Angela Sofia Garcia      @as-garciav       <agarciav@agrosavia.co>
+ - Christopher Ocampo       @arsp-dev         <christopher.ocampo@ritm.gov.ph> 
 
 
 ## Assemblers
@@ -37,9 +37,9 @@ Christopher Ocampo       @arsp-dev         <christopher.ocampo@ritm.gov.ph>
 
 ### Optional
 - `--output` (string): The path where the results will be stored. Default is `./output`.
-- `--medaka_model` (string): The path to the Medaka model file used for polishing assemblies. Default is `default_medaka_model`.
-- `--adapter_file` (string): The path to the adapter sequences file. Default is `default_adapter_file`.
-- `--min_contig_length` (integer): The minimum length of contigs to consider. Default is `1000`.
+- `--medaka_model` (string): The path to the Medaka model file used for polishing assemblies. Default is `r941_e81_fast_g514`.
+- `--adapter_file` (string): The path to the adapter sequences file. Default is `data/adapter.fas`.
+- `--min_contig_length` (integer): The minimum length of contigs to consider. Default is `500`.
 
 ## Example Command
 
@@ -54,8 +54,9 @@ nextflow run main.nf --samplesheet /path/to/samplesheet --output /path/to/output
 1. Prepare the Samplesheet: Ensure your CSV samplesheet contains the necessary fields for your samples. The required format is as follows:
 
 ```bash
-sample_id,long_reads,short_reads1,short_reads2,genome_size
+sample_id,short_reads1,short_reads2,long_reads,genome_size
 ```
+An example sample sheet has been provided in the project directory
 
 2. Run the Pipeline: Execute the Nextflow command with the appropriate arguments:
 ```bash
@@ -64,10 +65,10 @@ nextflow run main.nf --samplesheet /data/nihr/nextflow_pipelines/test_input/samp
 
 ## Requirements
 ### Software
-    - The pipeline is built only for Linux operating systems  (e.g. Linux, macOS, Windows with [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux))
-    - As of now its not supported for macOS because of the issue with medaka which is incompatible with some of the macos versions and macbook models
+    - The pipeline is built only for Linux operating systems  (e.g. Linux, Windows with [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux))
+    - As of now the pipeline is not supported for macOS because of the issue with medaka which is incompatible with some of the macos versions and macbook models
     - Nextflow >22
-    - Docker must be running (with 10 cores and 16GB ram allocated in the docker desktop app)
+    - Docker must be running (with 10 cores and 16GB ram allocated in the docker desktop app if using windows wsl)
 ### Hardware 
 It is recommended to have at least 10 cores and 16GB of RAM and 50GB of free storage
 
