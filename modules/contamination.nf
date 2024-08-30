@@ -4,7 +4,7 @@ process CHECKM_MARKERS {
     tag { sample_id }
     
     input:
-    val(genusNAME)
+    tuple val(sample_id), val(genusNAME)
 
     output:
     path(marker_file)

@@ -9,6 +9,7 @@ include { CHECKM_MARKERS                 } from '../modules/contamination'
 include { CONTAMINATION_CHECKM           } from '../modules/contamination'
 include { CONTAMINATION_GUNC             } from '../modules/contamination'
 include { COMBINE_CONTAMINATION_REPORTS  } from '../modules/contamination'
+include { COMBINE_REPORTS                } from '../modules/combine_reports'
 
 workflow LR_ASSEMBLY{
 
@@ -45,7 +46,7 @@ workflow LR_ASSEMBLY{
     SPECIATION(ASSEMBLY_DRAGONFLYE.out, "long")
     
    //contamination check checkm
-    CHECKM_MARKERS(params.genusNAME)
+    CHECKM_MARKERS(SPECIATION.out.species_name)
     CONTAMINATION_CHECKM(ASSEMBLY_DRAGONFLYE.out, CHECKM_MARKERS.out,"long")
 
     //contamination check gunc

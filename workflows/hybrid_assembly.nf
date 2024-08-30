@@ -12,6 +12,7 @@ include { CHECKM_MARKERS                 } from '../modules/contamination'
 include { CONTAMINATION_CHECKM           } from '../modules/contamination'
 include { CONTAMINATION_GUNC             } from '../modules/contamination'
 include { COMBINE_CONTAMINATION_REPORTS  } from '../modules/contamination'
+include { COMBINE_REPORTS                } from '../modules/combine_reports'
 
 workflow HY_ASSEMBLY{
 
@@ -61,7 +62,7 @@ workflow HY_ASSEMBLY{
     SPECIATION(UNICYCLER.out, "hybrid")
 
     //contamination check checkm
-    CHECKM_MARKERS(params.genusNAME)
+    CHECKM_MARKERS(SPECIATION.out.species_name)
     CONTAMINATION_CHECKM(UNICYCLER.out, CHECKM_MARKERS.out, "hybrid")
 
     //contamination check gunc

@@ -24,7 +24,7 @@ if (params.help) {
     printSelectedParameters()
 
     //sleep for 5 seconds
-    sleep(5000)
+    sleep(1000)
 
     //start the actual workflow
     workflow{
