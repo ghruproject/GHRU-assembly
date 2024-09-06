@@ -1,0 +1,6 @@
+.nextflow
+assembly
+output
+work
+.nextflow.*
+README.md
