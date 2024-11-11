@@ -1,16 +1,18 @@
 //import modules for the short read only assembly workflow
 
-include { CALCULATE_GENOME_SIZE       } from '../modules/short_reads_preprocess'
-include { DETERMINE_MIN_READ_LENGTH   } from '../modules/short_reads_preprocess'
-include { TRIMMING                    } from '../modules/short_reads_preprocess'
-include { FASTQC                      } from '../modules/short_reads_preprocess'
-include { ASSEMBLY_SHOVILL            } from '../modules/short_read_assembly'
-include { QUAST                       } from '../modules/quast'
-include { SPECIATION                  }  from '../modules/speciation' 
+include { CALCULATE_GENOME_SIZE          } from '../modules/short_reads_preprocess'
+include { DETERMINE_MIN_READ_LENGTH      } from '../modules/short_reads_preprocess'
+include { TRIMMING                       } from '../modules/short_reads_preprocess'
+include { FASTQC                         } from '../modules/short_reads_preprocess'
+include { ASSEMBLY_SHOVILL               } from '../modules/short_read_assembly'
+include { QUAST                          } from '../modules/quast'
+include { SPECIATION                     }  from '../modules/speciation' 
 include { CHECKM_MARKERS                 } from '../modules/contamination'
 include { CONTAMINATION_CHECKM           } from '../modules/contamination'
 include { CONTAMINATION_GUNC             } from '../modules/contamination'
 include { COMBINE_CONTAMINATION_REPORTS  } from '../modules/contamination'
+include { CALCULATEBASES_SR              } from '../modules/calculate_bases'
+include { ASSEMBLY_DEPTH                 } from '../modules/assembly_depth'
 include { COMBINE_REPORTS                } from '../modules/combine_reports'
 
 
@@ -61,6 +63,11 @@ workflow SR_ASSEMBLY{
     //Merge Checkm and Gunc Outputs using gunc-merge
     //COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
 
+    //calculate bases
+    CALCULATEBASES_SR(processed_short_reads)
+
+    ASSEMBLY_DEPTH(QUAST.out.assembly_length,CALCULATEBASES_SR.out)
+
     //Consolidate all reports
-    COMBINE_REPORTS(QUAST.out, SPECIATION.out, CONTAMINATION_CHECKM.out, "short")
+    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, "short")
 }
