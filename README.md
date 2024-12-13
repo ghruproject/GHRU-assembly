@@ -1,4 +1,4 @@
-# GHRU Assembly Pipeline
+# GHRU2 New Assembly Pipeline
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-24.04.4-23aa62.svg)](https://www.nextflow.io/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 
