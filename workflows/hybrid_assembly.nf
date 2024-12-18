@@ -13,6 +13,7 @@ include { CONTAMINATION_CHECKM           } from '../modules/contamination'
 include { CONTAMINATION_GUNC             } from '../modules/contamination'
 include { COMBINE_CONTAMINATION_REPORTS  } from '../modules/contamination'
 include { COMBINE_REPORTS                } from '../modules/combine_reports'
+include { QC_SCORING                     } from '../modules/quality_check_scoring'
 
 workflow HY_ASSEMBLY{
 
@@ -75,4 +76,7 @@ workflow HY_ASSEMBLY{
  
     //Consolidate all reports
     COMBINE_REPORTS(QUAST.out, SPECIATION.out, CONTAMINATION_CHECKM.out, "hybrid")
+  
+    //Quality of scoring
+    QC_SCORING(COMBINE_REPORTS.out, params.json_file)
  }

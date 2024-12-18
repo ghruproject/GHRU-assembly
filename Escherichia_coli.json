@@ -1,0 +1,83 @@
+[
+    {
+      "path": [
+        "metadata",
+        "ENA Tax ID"
+      ],
+      "operator": "in",
+      "value": [
+        "573"
+      ]
+    },
+    {
+      "path": [
+        "analyses",
+        "speciator",
+        "speciesId"
+      ],
+      "operator": "in",
+      "value": [
+        "573"
+      ]
+    },
+    {
+      "path": [
+        "analyses",
+        "assemblyStats",
+        "quast.# contigs (>= 1000 bp).metric_value"
+      ],
+      "operator": "<=",
+      "value": 500
+    },
+    {
+      "path": [
+        "analyses",
+        "assemblyStats",
+        "quast.Total length (>= 1000 bp).metric_value"
+      ],
+      "operator": "between",
+      "value": [
+        4969898,
+        6132846
+      ]
+    },
+    {
+      "path": [
+        "analyses",
+        "assemblyStats",
+        "quast.GC (%).metric_value"
+      ],
+      "operator": "between",
+      "value": [
+        56.35,
+        57.98
+      ]
+    },
+    {
+      "path": [
+        "analyses",
+        "assemblyStats",
+        "confindr.percentage_contamination.metric_value"
+      ],
+      "operator": "<=",
+      "value": 5
+    },
+    {
+      "path": [
+        "analyses",
+        "assemblyStats",
+        "quast.N50.metric_value"
+      ],
+      "operator": ">=",
+      "value": 25000
+    },
+    {
+      "path": [
+        "analyses",
+        "assemblyStats",
+        "quast.# N''s per 100 kbp.metric_value"
+      ],
+      "operator": "<=",
+      "value": 100
+    }
+  ]
