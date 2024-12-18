@@ -1,6 +1,7 @@
 process COMBINE_REPORTS{
     tag "$sample_id"
-
+    label 'bash_container'
+    
     publishDir "${params.output}/summary", mode: 'copy', pattern: "*.tsv"
 
     input:
