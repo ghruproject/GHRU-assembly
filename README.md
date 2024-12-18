@@ -4,7 +4,7 @@
 
 ## Overview
 
-The GHRU Assembly Pipeline (version 3.0) is designed for assembling genomic data based on a provided samplesheet. The pipeline supports different assemblers depending on the type of sequencing reads provided. 
+This a completely new GHRU Assembly Pipeline and is designed for assembling genomic data based on a provided samplesheet. The pipeline supports different assemblers depending on the type of sequencing reads provided. 
 
 The pipeline is built as parth of GHRU project funded by NIHR.
 
@@ -12,7 +12,8 @@ The pipeline is built as parth of GHRU project funded by NIHR.
  - Julio Diaz Caballero     @juliofdiaz       <julio.diaz@cgps.group>  
  - Varun Shammana           @varunshamanna    <varunshamanna4@gmail.com>  
  - Angela Sofia Garcia      @as-garciav       <agarciav@agrosavia.co>
- - Christopher Ocampo       @arsp-dev         <christopher.ocampo@ritm.gov.ph> 
+ - Christopher Ocampo       @arsp-dev         <christopher.ocampo@ritm.gov.ph>
+ - Nabil-Fareed Alikhan     @happykhan        <nabil.alikhan@cgps.group>
 
 
 ## Assemblers
