@@ -1,5 +1,6 @@
 // Return sample_id and assembly, and publish the assembly to ${params.output}/assemblies directory based on ${params.assembly_publish}
 process ASSEMBLY_SHOVILL {
+    
     label 'shovill_container'
     label 'process_medium'
  

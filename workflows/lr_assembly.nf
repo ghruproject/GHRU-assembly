@@ -1,17 +1,17 @@
 //import modules
-include { CALCULATE_GENOME_SIZE          } from '../modules/long_reads_preprocess'
+include { CALCULATE_GENOME_SIZE          }  from '../modules/long_reads_preprocess'
 include { NANOPLOT                       }  from '../modules/long_reads_preprocess'
 include { PORECHOP                       }  from '../modules/long_reads_preprocess'
-include { ASSEMBLY_DRAGONFLYE            } from '../modules/long_read_assembly'
-include { QUAST                          } from '../modules/quast'
+include { ASSEMBLY_DRAGONFLYE            }  from '../modules/long_read_assembly'
+include { QUAST                          }  from '../modules/quast'
 include { SPECIATION                     }  from '../modules/speciation' 
-include { CHECKM_MARKERS                 } from '../modules/contamination'
-include { CONTAMINATION_CHECKM           } from '../modules/contamination'
-include { CONTAMINATION_GUNC             } from '../modules/contamination'
-include { COMBINE_CONTAMINATION_REPORTS  } from '../modules/contamination'
-include { CALCULATEBASES_LR              } from '../modules/calculate_bases'
-include { ASSEMBLY_DEPTH                 } from '../modules/assembly_depth'
-include { COMBINE_REPORTS                } from '../modules/combine_reports'
+include { CHECKM_MARKERS                 }  from '../modules/contamination'
+include { CONTAMINATION_CHECKM           }  from '../modules/contamination'
+include { CONTAMINATION_GUNC             }  from '../modules/contamination'
+include { COMBINE_CONTAMINATION_REPORTS  }  from '../modules/contamination'
+include { CALCULATEBASES_LR              }  from '../modules/calculate_bases'
+include { ASSEMBLY_DEPTH                 }  from '../modules/assembly_depth'
+include { COMBINE_REPORTS                }  from '../modules/combine_reports'
 
 workflow LR_ASSEMBLY{
 
@@ -60,8 +60,9 @@ workflow LR_ASSEMBLY{
     //calculate bases
     CALCULATEBASES_LR(preprocessed_long_reads)
 
-    ASSEMBLY_DEPTH(QUAST.out.assembly_length,CALCULATEBASES_LR.out)
+    //calculate long read depth based on LR assembly length and LR bases
+    ASSEMBLY_DEPTH(QUAST.out.assembly_length,CALCULATEBASES_LR.out, "long_reads")
 
     //Consolidate all reports
-    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, "long")
+    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, "long")
 }

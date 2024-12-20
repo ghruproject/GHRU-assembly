@@ -1,4 +1,9 @@
 process CALCULATEBASES_SR {
+
+    label 'bash_container'
+    label 'process_medium'
+
+
     input:
     tuple val(sample_id), path(short_reads1), path(short_reads2), val(genome_size)
 
@@ -15,6 +20,11 @@ process CALCULATEBASES_SR {
 }
 
 process CALCULATEBASES_LR {
+
+    label 'bash_container'
+    label 'process_medium'
+
+    
     input:
     tuple val(sample_id), path(long_reads), val(genome_size)
 

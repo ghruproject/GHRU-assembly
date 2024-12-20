@@ -1,4 +1,5 @@
 process QUAST {
+    
     label 'quast_container'
     
     tag "$sample_id"
