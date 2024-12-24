@@ -1,22 +1,22 @@
 process COMBINE_REPORTS{
-    tag "$sample_id"
+    tag { meta.sample_id }
+    label 'process_single'
     label 'bash_container'
     
-    publishDir "${params.output}/summary", mode: 'copy', pattern: "*.tsv"
+    publishDir "${params.outdir}/summary", mode: 'copy', pattern: "*.tsv"
 
     input:
-    tuple val(sample_id), path(quast_report, stageAs: 'quast.tsv')
-    tuple val(sample_id), val(species_name)
-    tuple val(sample_id), path(species_report, stageAs: 'species.tsv')
-    tuple val(sample_id), path(contamination_report, stageAs: 'contamination.tsv')
-    tuple val(sample_id), path(depth_report, stageAs: 'depth.tsv') 
-    val(type)
+    tuple val(meta), path(quast_report, stageAs: 'quast.tsv')
+    tuple val(meta_1), val(species_name)
+    tuple val(meta_2), path(species_report, stageAs: 'species.tsv')
+    tuple val(meta_3), path(contamination_report, stageAs: 'contamination.tsv')
+    tuple val(meta_4), path(depth_report, stageAs: 'depth.tsv') 
 
     output:
-    tuple val(sample_id), path("${sample_id}.${type}.tsv"), emit: report
+    tuple val(meta.sample_id), path("${meta.sample_id}.${meta.type}.tsv"), emit: report
 
     script:
-    report="${sample_id}.${type}.tsv"
+    report="${meta.sample_id}.${meta.type}.tsv"
     """
     # Remove first column from the reports
     cut -f2- quast.tsv > quast_2.tsv
@@ -36,7 +36,7 @@ process COMBINE_REPORTS{
     head -1 depth_2.tsv | awk 'BEGIN {FS="\t"; OFS="\t"} {for (i=1; i<=NF; i++) \$i = "depth_calc."\$i} 1' > depth_3.tsv
     tail -1 depth_2.tsv >> depth_3.tsv
 
-    echo "sample_id\tassembly_type\n"${sample_id}"\t"${type} > info.tsv
+    echo "sample_id\tassembly_type\n"${meta.sample_id}"\t"${meta.type} > info.tsv
 
     paste info.tsv quast_3.tsv species_3.tsv contamination_3.tsv depth_3.tsv > ${report}
 

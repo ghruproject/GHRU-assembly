@@ -7,8 +7,6 @@ include { QUAST                          }  from '../modules/quast'
 include { SPECIATION                     }  from '../modules/speciation' 
 include { CHECKM_MARKERS                 }  from '../modules/contamination'
 include { CONTAMINATION_CHECKM           }  from '../modules/contamination'
-include { CONTAMINATION_GUNC             }  from '../modules/contamination'
-include { COMBINE_CONTAMINATION_REPORTS  }  from '../modules/contamination'
 include { CALCULATEBASES_LR              }  from '../modules/calculate_bases'
 include { ASSEMBLY_DEPTH                 }  from '../modules/assembly_depth'
 include { COMBINE_REPORTS                }  from '../modules/combine_reports'
@@ -19,10 +17,7 @@ workflow LR_ASSEMBLY{
 
     //take the long reads read channel from the main
     lng_reads
-
-    //take the guncDB path from main
-    //gunc_db
-
+    
     //main workflow for long read assembly
     main:
 
@@ -42,20 +37,14 @@ workflow LR_ASSEMBLY{
     ASSEMBLY_DRAGONFLYE(preprocessed_long_reads, params.medaka_model)
 
     //assess assembly using quast
-    QUAST(ASSEMBLY_DRAGONFLYE.out, "long")
+    QUAST(ASSEMBLY_DRAGONFLYE.out)
 
     //speciate with speciator
-    SPECIATION(ASSEMBLY_DRAGONFLYE.out, "long")
+    SPECIATION(ASSEMBLY_DRAGONFLYE.out)
     
    //contamination check checkm
     CHECKM_MARKERS(SPECIATION.out.species_name)
-    CONTAMINATION_CHECKM(ASSEMBLY_DRAGONFLYE.out, CHECKM_MARKERS.out,"long")
-
-    //contamination check gunc
-    //CONTAMINATION_GUNC(ASSEMBLY_DRAGONFLYE.out, gunc_db)
-
-    //Merge Checkm and Gunc Outputs using gunc-merge
-    //COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
+    CONTAMINATION_CHECKM(ASSEMBLY_DRAGONFLYE.out, CHECKM_MARKERS.out)
     
     //calculate bases
     CALCULATEBASES_LR(preprocessed_long_reads)
@@ -64,5 +53,5 @@ workflow LR_ASSEMBLY{
     ASSEMBLY_DEPTH(QUAST.out.assembly_length,CALCULATEBASES_LR.out, "long_reads")
 
     //Consolidate all reports
-    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, "long")
+    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out)
 }

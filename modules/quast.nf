@@ -1,21 +1,19 @@
 process QUAST {
-    
+    tag { meta.sample_id }
+    label 'process_single'
     label 'quast_container'
     
-    tag "$sample_id"
-
-    publishDir "${params.output}/quast_summary", mode: 'copy', pattern: "*.tsv"
+    publishDir "${params.outdir}/quast_summary", mode: 'copy', pattern: "*.tsv"
 
     input:
-    tuple val(sample_id), path(assembly)
-    val(type)
+    tuple val(meta), path(assembly)
 
     output:
-    tuple val(sample_id), path("${sample_id}.${type}.tsv"), emit: report
-    tuple val(sample_id), val(type), env(assembly_length), emit: assembly_length
+    tuple val(meta), path("${meta.sample_id}.${meta.type}.tsv"), emit: report
+    tuple val(meta), env('assembly_length'), emit: assembly_length
 
     script:
-    report="${sample_id}.${type}.tsv"
+    report="${meta.sample_id}.${meta.type}.tsv"
     """
     quast.py -o results "$assembly"
     bash transpose_tsv.sh results/report.tsv > ${report}

@@ -1,15 +1,14 @@
 process CALCULATEBASES_SR {
-
-    label 'bash_container'
+    tag { meta.sample_id }
     label 'process_medium'
-
+    label 'bash_container'
 
     input:
-    tuple val(sample_id), path(short_reads1), path(short_reads2), val(genome_size)
+    tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
 
 
     output:
-    tuple val(sample_id), env(total_bases)
+    tuple val(meta), env('total_bases')
 
     script:
     """
@@ -20,16 +19,15 @@ process CALCULATEBASES_SR {
 }
 
 process CALCULATEBASES_LR {
-
-    label 'bash_container'
+    tag { meta.sample_id }
     label 'process_medium'
-
+    label 'bash_container'
     
     input:
-    tuple val(sample_id), path(long_reads), val(genome_size)
+    tuple val(meta), path(long_reads), val(genome_size)
 
     output:
-     tuple val(sample_id), env(total_bases)
+    tuple val(meta), env('total_bases')
 
     script:
     """

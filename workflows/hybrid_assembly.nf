@@ -10,8 +10,6 @@ include { QUAST                               } from '../modules/quast'
 include { SPECIATION                          } from '../modules/speciation' 
 include { CHECKM_MARKERS                      } from '../modules/contamination'
 include { CONTAMINATION_CHECKM                } from '../modules/contamination'
-include { CONTAMINATION_GUNC                  } from '../modules/contamination'
-include { COMBINE_CONTAMINATION_REPORTS       } from '../modules/contamination'
 include { CALCULATEBASES_SR                   } from '../modules/calculate_bases'
 include { CALCULATEBASES_LR                   } from '../modules/calculate_bases'
 include { ASSEMBLY_DEPTH as ASSEMBLY_DEPTH_SR } from '../modules/assembly_depth'
@@ -28,9 +26,6 @@ workflow HY_ASSEMBLY{
 
     //take long reads from hybrid channel
     hyb_lng_reads
-
-    //take the guncDB path from main
-    //gunc_db
 
     //main workflow for hybrid assembly
     main: 
@@ -63,20 +58,14 @@ workflow HY_ASSEMBLY{
     UNICYCLER(processed_short_reads, processed_long_reads)
 
     //run quast for assessing assembly
-    QUAST(UNICYCLER.out, "hybrid")
+    QUAST(UNICYCLER.out)
 
     //speciate with speciator
-    SPECIATION(UNICYCLER.out, "hybrid")
+    SPECIATION(UNICYCLER.out)
 
     //contamination check checkm
     CHECKM_MARKERS(SPECIATION.out.species_name)
-    CONTAMINATION_CHECKM(UNICYCLER.out, CHECKM_MARKERS.out, "hybrid")
-
-    //contamination check gunc
-    //CONTAMINATION_GUNC(UNICYCLER.out, gunc_db)
-
-    //Merge Checkm and Gunc Outputs using gunc-merge
-    //COMBINE_CONTAMINATION_REPORTS(CONTAMINATION_CHECKM.out, CONTAMINATION_GUNC.out)
+    CONTAMINATION_CHECKM(UNICYCLER.out, CHECKM_MARKERS.out)
     
     //calculate bases
     CALCULATEBASES_SR(processed_short_reads)
@@ -94,5 +83,5 @@ workflow HY_ASSEMBLY{
     COMBINE_DEPTH_REPORTS(ASSEMBLY_DEPTH_SR.out, ASSEMBLY_DEPTH_LR.out)
  
     //Consolidate all reports
-    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out, "hybrid")
+    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out)
  }
