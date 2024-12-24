@@ -1,16 +1,29 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl=2
 
-//include help and start message
+/*
+========================================================================================
+        IMPORT PLUGINS
+========================================================================================
+*/
+
 include { validateParameters; paramsSummaryLog; samplesheetToList } from 'plugin/nf-schema'
 
-//include subworkflows for short, long and hybrid assemblies
+/*
+========================================================================================
+    IMPORT SUBWORKFLOWS
+========================================================================================
+*/
+
 include { SR_ASSEMBLY          } from './workflows/sr_assembly'
 include { LR_ASSEMBLY          } from './workflows/lr_assembly'
 include { HY_ASSEMBLY          } from './workflows/hybrid_assembly'
-include { VALIDATE_SAMPLESHEET } from './modules/validatesamplesheet.nf'
 
-//start the actual workflow
+/*
+========================================================================================
+    RUN MAIN WORKFLOW
+========================================================================================
+*/
 workflow {
 
     // Validate input parameters
@@ -18,8 +31,6 @@ workflow {
 
     // Print summary of supplied parameters
     log.info paramsSummaryLog(workflow)    
-    //Pipiline version
-    pipelineVersion = '4.0.0'
     
     // Create a new channel of metadata from a sample sheet passed to the pipeline through the --input parameter    
     validated_samplesheet_ch = Channel.fromList(samplesheetToList(params.samplesheet, "assets/schema_input.json"))
@@ -39,9 +50,40 @@ workflow {
     SR_ASSEMBLY (assembly.srt)
 
     //run long read assembly workflow
-    // LR_ASSEMBLY (assembly.lng)
+    LR_ASSEMBLY (assembly.lng)
 
-    // //run hybrid assembly workflow
- //   HY_ASSEMBLY (assembly.hyb)
+    //run hybrid assembly workflow
+    // HY_ASSEMBLY (assembly.hyb)
+
+
 }
 
+/*
+========================================================================================
+    WORKFLOW COMPLETION
+========================================================================================
+*/
+ workflow.onComplete {
+        workDir = new File("${workflow.workDir}")
+
+        println """
+        GHRU Assembly Execution Summary
+        ---------------------------
+        Pipeline Version : ${workflow.manifest.version}
+        Nextflow Version : ${nextflow.version}
+        Command Line     : ${workflow.commandLine}
+        Resumed          : ${workflow.resume}
+        Completed At     : ${workflow.complete}
+        Duration         : ${workflow.duration}
+        Success          : ${workflow.success}
+        Exit Code        : ${workflow.exitStatus}
+        Error Report     : ${workflow.errorReport ?: '-'}
+        Launch Dir       : ${workflow.launchDir}
+        """
+    }    
+
+/*
+========================================================================================
+    THE END
+========================================================================================
+*/

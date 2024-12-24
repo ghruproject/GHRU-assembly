@@ -3,7 +3,7 @@ process SPECIATION {
     label 'process_single'
     label 'speciation_container'
 
-    publishDir "${params.output}/speciation_summary", mode: 'copy', pattern: '*.tsv'
+    publishDir "${params.outdir}/speciation_summary", mode: 'copy', pattern: '*.tsv'
 
     input:
     tuple val(meta), path(fasta_file)

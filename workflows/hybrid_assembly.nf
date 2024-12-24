@@ -21,17 +21,14 @@ workflow HY_ASSEMBLY{
 
     take:
     
-    //take short reads from hybrid channel
-    hyb_srt_reads
+    hyb_reads
 
-    //take long reads from hybrid channel
-    hyb_lng_reads
 
     //main workflow for hybrid assembly
     main: 
 
     //calculate genomesize for which it is not available and create a channel for reads with genome size
-    reads_with_genome_size = CALCULATE_GENOME_SIZE(hyb_srt_reads)
+    reads_with_genome_size = CALCULATE_GENOME_SIZE(hyb_reads.meta, )
 
     //determine min read length required for trimming
     DETERMINE_MIN_READ_LENGTH(reads_with_genome_size)
@@ -46,10 +43,10 @@ workflow HY_ASSEMBLY{
     FASTQC(processed_short_reads)
 
     //qc of long reads using nanoplot
-    NANOPLOT(hyb_lng_reads)
+    NANOPLOT(hyb_reads)
 
     //trim adapters using porechop
-    PORECHOP(hyb_lng_reads)
+    PORECHOP(hyb_reads)
 
     //create only long reads channel
     processed_long_reads= PORECHOP.out.long_reads

@@ -24,7 +24,7 @@ process NANOPLOT {
     label 'process_low'
     label 'nanoplot_container'
 
-    publishDir "${params.output}/long_read_stats", mode: 'copy', pattern: '*.html'
+    publishDir "${params.outdir}/long_read_stats", mode: 'copy', pattern: '*.html'
 
     input:
     tuple val(meta), path(long_reads), val(genome_size)
