@@ -33,13 +33,6 @@
     }
   ],
   "properties": {
-    "tracedir": {
-      "type": "string",
-      "hidden": true,
-      "description": "Directory to keep pipeline Nextflow logs and reports.",
-      "default": "${params.outdir}/pipeline_info",
-      "fa_icon": "fas fa-cogs"
-    },
     "max_memory": {
       "type": "string",
       "hidden": true,

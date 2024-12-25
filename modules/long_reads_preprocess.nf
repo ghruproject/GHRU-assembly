@@ -1,4 +1,4 @@
-process CALCULATE_GENOME_SIZE{
+process CALCULATE_GENOME_SIZE_LR {
     tag { meta.sample_id }    
     label 'process_medium'
     label 'kmc_container'

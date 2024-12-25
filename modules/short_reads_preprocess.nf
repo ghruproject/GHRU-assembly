@@ -1,4 +1,4 @@
-process CALCULATE_GENOME_SIZE{
+process CALCULATE_GENOME_SIZE_SR {
     tag { meta.sample_id }
     label 'process_low'
     label 'kmc_container'
@@ -21,7 +21,7 @@ process CALCULATE_GENOME_SIZE{
 }
 
 
-process DETERMINE_MIN_READ_LENGTH{
+process DETERMINE_MIN_READ_LENGTH {
     tag { meta.sample_id }
     label 'process_single'
     label 'bash_container'        

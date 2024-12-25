@@ -1,5 +1,5 @@
 //import modules
-include { CALCULATE_GENOME_SIZE          }  from '../modules/long_reads_preprocess'
+include { CALCULATE_GENOME_SIZE_LR       }  from '../modules/long_reads_preprocess'
 include { NANOPLOT                       }  from '../modules/long_reads_preprocess'
 include { PORECHOP                       }  from '../modules/long_reads_preprocess'
 include { ASSEMBLY_DRAGONFLYE            }  from '../modules/long_read_assembly'
@@ -22,7 +22,7 @@ workflow LR_ASSEMBLY{
     main:
 
     //calculate genomesize for which it is not available and create a channel for reads with genome size
-    read_with_genome_size = CALCULATE_GENOME_SIZE(lng_reads)
+    read_with_genome_size = CALCULATE_GENOME_SIZE_LR(lng_reads)
 
     //do nanoplot of the long reads
     NANOPLOT(read_with_genome_size)

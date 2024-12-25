@@ -1,8 +1,9 @@
 //import modules
-include { CALCULATE_GENOME_SIZE               } from '../modules/short_reads_preprocess'
+include { CALCULATE_GENOME_SIZE_SR            } from '../modules/short_reads_preprocess'
 include { DETERMINE_MIN_READ_LENGTH           } from '../modules/short_reads_preprocess'
 include { TRIMMING                            } from '../modules/short_reads_preprocess'
 include { FASTQC                              } from '../modules/short_reads_preprocess'
+include { CALCULATE_GENOME_SIZE_LR            } from '../modules/long_reads_preprocess'
 include { NANOPLOT                            } from '../modules/long_reads_preprocess'
 include { PORECHOP                            } from '../modules/long_reads_preprocess'
 include { UNICYCLER                           } from '../modules/hybrid_assemblers'
@@ -21,14 +22,15 @@ workflow HY_ASSEMBLY{
 
     take:
     
-    hyb_reads
+    hyb_short
+    hyb_long
 
 
     //main workflow for hybrid assembly
     main: 
 
     //calculate genomesize for which it is not available and create a channel for reads with genome size
-    reads_with_genome_size = CALCULATE_GENOME_SIZE(hyb_reads.meta, )
+    reads_with_genome_size = CALCULATE_GENOME_SIZE_SR(hyb_short)
 
     //determine min read length required for trimming
     DETERMINE_MIN_READ_LENGTH(reads_with_genome_size)
@@ -42,11 +44,12 @@ workflow HY_ASSEMBLY{
     //do fastqc for the trimmed reads
     FASTQC(processed_short_reads)
 
+    long_reads_with_genome_size = CALCULATE_GENOME_SIZE_LR(hyb_long)
     //qc of long reads using nanoplot
-    NANOPLOT(hyb_reads)
+    NANOPLOT(long_reads_with_genome_size)
 
     //trim adapters using porechop
-    PORECHOP(hyb_reads)
+    PORECHOP(long_reads_with_genome_size)
 
     //create only long reads channel
     processed_long_reads= PORECHOP.out.long_reads

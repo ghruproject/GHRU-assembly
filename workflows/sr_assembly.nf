@@ -1,12 +1,12 @@
 //import modules for the short read only assembly workflow
 
-include { CALCULATE_GENOME_SIZE          } from '../modules/short_reads_preprocess'
+include { CALCULATE_GENOME_SIZE_SR       } from '../modules/short_reads_preprocess'
 include { DETERMINE_MIN_READ_LENGTH      } from '../modules/short_reads_preprocess'
 include { TRIMMING                       } from '../modules/short_reads_preprocess'
 include { FASTQC                         } from '../modules/short_reads_preprocess'
 include { ASSEMBLY_SHOVILL               } from '../modules/short_read_assembly'
 include { QUAST                          } from '../modules/quast'
-include { SPECIATION                     }  from '../modules/speciation' 
+include { SPECIATION                     } from '../modules/speciation' 
 include { CHECKM_MARKERS                 } from '../modules/contamination'
 include { CONTAMINATION_CHECKM           } from '../modules/contamination'
 include { CALCULATEBASES_SR              } from '../modules/calculate_bases'
@@ -24,7 +24,7 @@ workflow SR_ASSEMBLY{
     //main workflow for short read assembly
     main:
     //calculate genomesize for which it is not available and create a channel for reads with genome size
-    reads_with_genome_size = CALCULATE_GENOME_SIZE(srt_reads)
+    reads_with_genome_size = CALCULATE_GENOME_SIZE_SR(srt_reads)
 
     //determine min read length required for trimming
     DETERMINE_MIN_READ_LENGTH(reads_with_genome_size)

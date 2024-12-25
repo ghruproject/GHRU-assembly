@@ -40,7 +40,7 @@ workflow {
     | branch { meta, short_r1, short_r2, long_reads ->
         hyb: long_reads && short_r1 && short_r2 
             return [meta + [type: 'hybrid'], short_r1, short_r2, long_reads]     
-        srt: short_r1 && short_r2 // Channel name and Conditional
+        srt: short_r1 && short_r2 
             return [meta + [type: 'short'], short_r1, short_r2]
         lng: long_reads
             return [meta + [type: 'long'], long_reads]
@@ -53,7 +53,15 @@ workflow {
     LR_ASSEMBLY (assembly.lng)
 
     //run hybrid assembly workflow
-    // HY_ASSEMBLY (assembly.hyb)
+    // Split Hybrid assembly reads 
+    assembly.hyb
+    .multiMap { meta, short_r1, short_r2, long_reads ->
+        longreads: [meta, long_reads]
+        shortreads: [meta, short_r1, short_r2]
+    }
+    .set { hybSplit }
+
+    HY_ASSEMBLY (hybSplit.shortreads, hybSplit.longreads)
 
 
 }
