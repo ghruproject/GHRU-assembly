@@ -45,7 +45,6 @@ Define where the pipeline should find input data and save output data.
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-------------|------|---------|----------|--------|
-| `tracedir` | Directory to keep pipeline Nextflow logs and reports. | `string` | ${params.outdir}/pipeline_info |  | True |
 | `max_memory` | Maximum memory to use for each process | `string` | 16.GB |  | True |
 | `max_cpus` | Maximum number of CPUs to use for each process | `integer` | 10 |  | True |
 | `max_time` | Maximum time to use for each process | `string` | 10.h |  | True |
