@@ -8,7 +8,7 @@ nextflow.enable.dsl=2
 */
 
 include { validateParameters; paramsSummaryLog; samplesheetToList } from 'plugin/nf-schema'
-
+include { startMessage } from './modules/messages'
 /*
 ========================================================================================
     IMPORT SUBWORKFLOWS
@@ -24,11 +24,11 @@ include { HY_ASSEMBLY          } from './workflows/hybrid_assembly'
     RUN MAIN WORKFLOW
 ========================================================================================
 */
-workflow {
 
+workflow {
+    startMessage(workflow.manifest.version)
     // Validate input parameters
     validateParameters()
-
     // Print summary of supplied parameters
     log.info paramsSummaryLog(workflow)    
     
@@ -50,7 +50,7 @@ workflow {
     SR_ASSEMBLY (assembly.srt)
 
     //run long read assembly workflow
-    LR_ASSEMBLY (assembly.lng)
+    // LR_ASSEMBLY (assembly.lng)
 
     //run hybrid assembly workflow
     // Split Hybrid assembly reads 
@@ -61,7 +61,7 @@ workflow {
     }
     .set { hybSplit }
 
-    HY_ASSEMBLY (hybSplit.shortreads, hybSplit.longreads)
+    // HY_ASSEMBLY (hybSplit.shortreads, hybSplit.longreads)
 
 
 }

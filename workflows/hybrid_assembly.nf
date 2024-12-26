@@ -17,6 +17,7 @@ include { ASSEMBLY_DEPTH as ASSEMBLY_DEPTH_SR } from '../modules/assembly_depth'
 include { ASSEMBLY_DEPTH as ASSEMBLY_DEPTH_LR } from '../modules/assembly_depth'
 include { COMBINE_DEPTH_REPORTS               } from '../modules/assembly_depth'
 include { COMBINE_REPORTS                     } from '../modules/combine_reports'
+include { resolveRelativePath                 } from '../modules/messages'
 
 workflow HY_ASSEMBLY{
 
@@ -36,6 +37,7 @@ workflow HY_ASSEMBLY{
     DETERMINE_MIN_READ_LENGTH(reads_with_genome_size)
 
     //qc trimming using trimmomatic
+    def adapter_yes_file = resolveRelativePath(projectDir, params.adapter_file)
     TRIMMING (reads_with_genome_size, DETERMINE_MIN_READ_LENGTH.out, params.adapter_file)
 
     //create channel called processed short reads from trimming out

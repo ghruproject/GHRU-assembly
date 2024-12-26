@@ -25,11 +25,39 @@
           "default": "${launchDir}/output"
         }
       }
+    },
+    "param_options": {
+      "title": "Special parameters",
+      "type": "object",
+      "fa_icon": "fas fa-terminal",
+      "description": "Additional parameters for the pipeline",
+      "properties": {
+        "medaka_model": {
+          "type": "string",
+          "description": "Medaka model to use",
+          "default": "r941_e81_fast_g514"
+        },
+        "adapter_file": {
+          "type": "string",
+          "description": "Adapter file for trimming",
+          "format": "file-path",
+          "default": "${projectDir}/data/adapters.fasta"
+        },
+        "min_contig_length": {
+          "type": "integer",
+          "hidden": true,
+          "description": "Minimum contig length to keep",
+          "default": 500
+        }
+      }
     }
   },
   "allOf": [
     {
       "$ref": "#/$defs/input_output_options"
+    },
+    {
+      "$ref": "#/$defs/param_options"
     }
   ],
   "properties": {
@@ -50,25 +78,6 @@
       "hidden": true,
       "description": "Maximum time to use for each process",
       "default": "10.h"
-    },
-    "adapter_file": {
-      "type": "string",
-      "hidden": true,
-      "description": "Adapter file for trimming",
-      "format": "file-path",
-      "default": "${projectDir}/data/adapters.fasta"
-    },
-    "min_contig_length": {
-      "type": "integer",
-      "hidden": true,
-      "description": "Minimum contig length to keep",
-      "default": 500
-    },
-    "medaka_model": {
-      "type": "string",
-      "hidden": true,
-      "description": "Medaka model to use",
-      "default": "r941_e81_fast_g514"
     }
   }
 }

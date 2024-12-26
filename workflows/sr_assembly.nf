@@ -12,7 +12,7 @@ include { CONTAMINATION_CHECKM           } from '../modules/contamination'
 include { CALCULATEBASES_SR              } from '../modules/calculate_bases'
 include { ASSEMBLY_DEPTH                 } from '../modules/assembly_depth'
 include { COMBINE_REPORTS                } from '../modules/combine_reports'
-
+include { resolveRelativePath            } from '../modules/messages'
 
 workflow SR_ASSEMBLY{
 
@@ -30,7 +30,8 @@ workflow SR_ASSEMBLY{
     DETERMINE_MIN_READ_LENGTH(reads_with_genome_size)
 
     //qc trimming using trimmomatic
-    TRIMMING (reads_with_genome_size, DETERMINE_MIN_READ_LENGTH.out, params.adapter_file)
+    def adapter_yes_file = resolveRelativePath(projectDir, params.adapter_file)
+    TRIMMING (reads_with_genome_size, DETERMINE_MIN_READ_LENGTH.out, adapter_yes_file)
 
     //create channel called processed short reads from trimming out
     processed_short_reads= TRIMMING.out
