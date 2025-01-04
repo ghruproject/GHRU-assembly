@@ -30,10 +30,11 @@ process SPECCHECK_SUMMARY{
     tuple val(meta), path(spec_report)
 
     output:
-    tuple val(meta), path("qc_report.csv"), emit: report
+    tuple val(meta), path("qc_report.${meta.type}.csv"), emit: report
 
     script:
     """
     python /app/speccheck.py summary ./ 
+    mv qc_report.csv qc_report.${meta.type}.csv
     """   
 }
