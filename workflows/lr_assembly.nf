@@ -10,6 +10,8 @@ include { CONTAMINATION_CHECKM           }  from '../modules/contamination'
 include { CALCULATEBASES_LR              }  from '../modules/calculate_bases'
 include { ASSEMBLY_DEPTH                 }  from '../modules/assembly_depth'
 include { COMBINE_REPORTS                }  from '../modules/combine_reports'
+include { SPECCHECK                      } from '../modules/speccheck'
+include { SPECCHECK_SUMMARY              } from '../modules/speccheck'
 
 workflow LR_ASSEMBLY{
 
@@ -54,4 +56,11 @@ workflow LR_ASSEMBLY{
 
     //Consolidate all reports
     COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out)
+
+    SPECCHECK(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out)
+
+    // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
+    SPECCHECK_SUMMARY(SPECCHECK.out.report.collect())
+
+
 }

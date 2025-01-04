@@ -18,6 +18,8 @@ include { ASSEMBLY_DEPTH as ASSEMBLY_DEPTH_LR } from '../modules/assembly_depth'
 include { COMBINE_DEPTH_REPORTS               } from '../modules/assembly_depth'
 include { COMBINE_REPORTS                     } from '../modules/combine_reports'
 include { resolveRelativePath                 } from '../modules/messages'
+include { SPECCHECK                      } from '../modules/speccheck'
+include { SPECCHECK_SUMMARY              } from '../modules/speccheck'
 
 workflow HY_ASSEMBLY{
 
@@ -86,4 +88,9 @@ workflow HY_ASSEMBLY{
  
     //Consolidate all reports
     COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out)
+
+    SPECCHECK(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out)
+
+    // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
+    SPECCHECK_SUMMARY(SPECCHECK.out.report.collect())
  }
