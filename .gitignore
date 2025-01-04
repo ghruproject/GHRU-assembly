@@ -4,7 +4,6 @@ work
 *.png
 *.html
 *.dag
-*check*
 *test*
 samplesheet.csv
 *.dmnd
