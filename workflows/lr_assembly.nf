@@ -57,7 +57,7 @@ workflow LR_ASSEMBLY{
     //Consolidate all reports
     COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out)
 
-    SPECCHECK(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out)
+    SPECCHECK(QUAST.out.orireport, SPECIATION.out, CONTAMINATION_CHECKM.out)
 
     // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
     SPECCHECK_SUMMARY(SPECCHECK.out.report.collect())
