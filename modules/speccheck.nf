@@ -2,6 +2,7 @@ process SPECCHECK{
     tag { meta.sample_id }
     label 'process_single'
     label 'speccheck_container'
+    publishDir "${params.outdir}/speccheck", mode: 'copy'    
     
     input:
     tuple val(meta), path(quast_report, stageAs: 'quast.report.tsv')
