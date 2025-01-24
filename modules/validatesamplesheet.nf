@@ -1,6 +1,7 @@
 process VALIDATE_SAMPLESHEET {
 
     label 'python_container'
+    label 'process_medium'
 
     input:
     path samplesheet

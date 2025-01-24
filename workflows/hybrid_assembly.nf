@@ -85,10 +85,10 @@ workflow HY_ASSEMBLY{
     CALCULATEBASES_LR(PORECHOP.out.long_read_assembly)
 
     //calculate short read depth based on assembly length
-    ASSEMBLY_DEPTH_SR (QUAST.out.assembly_length, CALCULATEBASES_SR.out, "short_reads")
+    ASSEMBLY_DEPTH_SR (QUAST.out.assembly_length, CALCULATEBASES_SR.out, "short")
 
     //calculate long read depth based on assembly length
-    ASSEMBLY_DEPTH_LR (QUAST.out.assembly_length, CALCULATEBASES_LR.out, "long_reads")
+    ASSEMBLY_DEPTH_LR (QUAST.out.assembly_length, CALCULATEBASES_LR.out, "long")
 
     //combine SR and LR depth reports
     COMBINE_DEPTH_REPORTS(ASSEMBLY_DEPTH_SR.out, ASSEMBLY_DEPTH_LR.out)

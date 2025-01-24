@@ -1,4 +1,5 @@
 process CHECKM_MARKERS {
+    
     label 'checkm_container'
 
     tag { sample_id }
@@ -19,6 +20,7 @@ process CHECKM_MARKERS {
 }
 
 process CONTAMINATION_CHECKM {
+    
     label 'checkm_container'
     label 'process_medium'
 

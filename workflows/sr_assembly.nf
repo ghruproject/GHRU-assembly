@@ -67,7 +67,7 @@ workflow SR_ASSEMBLY{
     CALCULATEBASES_SR(processed_short_reads)
 
     //calculate depth of short reads based on assembly length and short read bases
-    ASSEMBLY_DEPTH(QUAST.out.assembly_length,CALCULATEBASES_SR.out, "short_reads")
+    ASSEMBLY_DEPTH(QUAST.out.assembly_length,CALCULATEBASES_SR.out, "short")
 
     //Consolidate all reports
     COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, "short")

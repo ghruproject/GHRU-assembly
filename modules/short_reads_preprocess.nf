@@ -1,7 +1,9 @@
 process CALCULATE_GENOME_SIZE{
+    
     label 'kmc_container'
+    label 'process_medium'
 
-     tag { sample_id }
+    tag {sample_id}
 
     input:
      tuple val(sample_id), path(short_reads1), path(short_reads2), val(genome_size)

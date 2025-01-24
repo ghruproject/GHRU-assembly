@@ -18,8 +18,8 @@ process ASSEMBLY_DEPTH {
     depth=\$(echo "scale=2; ${total_bases} / ${assembly_length}" | bc)
 
     #Write header and values to the TSV file
-    echo -e "Sample_id\tRead_type\tDepth" > ${depth_report}
-    echo -e "${sample_id}\t${type}\t\${depth}" >> ${depth_report}    
+    echo -e "Sample_id\t${type}_Depth" > ${depth_report}
+    echo -e "${sample_id}\t\${depth}" >> ${depth_report}    
     """
 }
 
@@ -39,10 +39,10 @@ process COMBINE_DEPTH_REPORTS {
     script:
     """
     # Create header for combined report
-    echo -e "Sample_id\tShort_read_Depth\tLong_read_Depth" > combined_depth_report.tsv
+    echo -e "Sample_id\tshort_Depth\tlong_Depth" > combined_depth_report.tsv
 
-    # Read SR and LR depths and combine into a single line per sample
-    paste <(cut -f1,3 ${sr_depth_reports} | tail -n +2) \
-          <(cut -f3 ${lr_depth_reports} | tail -n +2) >> combined_depth_report.tsv
+    # Combine SR and LR depths into a single line per sample
+    paste <(tail -n +2 ${sr_depth_reports}) \
+          <(cut -f2 ${lr_depth_reports} | tail -n +2) >> combined_depth_report.tsv
     """
 }

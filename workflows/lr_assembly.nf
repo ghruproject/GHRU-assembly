@@ -61,7 +61,7 @@ workflow LR_ASSEMBLY{
     CALCULATEBASES_LR(preprocessed_long_reads)
 
     //calculate long read depth based on LR assembly length and LR bases
-    ASSEMBLY_DEPTH(QUAST.out.assembly_length,CALCULATEBASES_LR.out, "long_reads")
+    ASSEMBLY_DEPTH(QUAST.out.assembly_length,CALCULATEBASES_LR.out, "long")
 
     //Consolidate all reports
     COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, "long")

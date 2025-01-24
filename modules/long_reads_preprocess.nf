@@ -1,4 +1,5 @@
 process CALCULATE_GENOME_SIZE{
+    
     label 'kmc_container'
     label 'process_medium'
 

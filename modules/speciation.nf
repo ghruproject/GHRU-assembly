@@ -1,6 +1,7 @@
 process SPECIATION {
 
     label 'speciation_container'
+    label 'process_medium'
 
     publishDir "${params.output}/speciation_summary", mode: 'copy', pattern: '*.tsv'
 
