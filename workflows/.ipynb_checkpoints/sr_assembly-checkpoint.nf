@@ -15,6 +15,7 @@ include { COMBINE_REPORTS                } from '../modules/combine_reports'
 include { resolveRelativePath            } from '../modules/messages'
 include { SPECCHECK                      } from '../modules/speccheck'
 include { SPECCHECK_SUMMARY              } from '../modules/speccheck'
+include { CONFINDR_FASTQS                } from '../modules/contamination'
 
 workflow SR_ASSEMBLY{
 
@@ -37,6 +38,9 @@ workflow SR_ASSEMBLY{
 
     //create channel called processed short reads from trimming out
     processed_short_reads= TRIMMING.out
+
+    // Confindr on reads 
+    CONFINDR_FASTQS(processed_short_reads, params.database_directory, "Illumina")
 
     //do fastqc for the trimmed reads
     FASTQC(processed_short_reads)

@@ -40,7 +40,7 @@ workflow SR_ASSEMBLY{
     processed_short_reads= TRIMMING.out
 
     // Confindr on reads 
-    CONFINDR_FASTQS(processed_short_reads, params.database_directory)
+    CONFINDR_FASTQS(processed_short_reads, params.database_directory, "Illumina")
 
     //do fastqc for the trimmed reads
     FASTQC(processed_short_reads)
