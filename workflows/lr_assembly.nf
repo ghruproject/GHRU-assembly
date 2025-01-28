@@ -12,6 +12,7 @@ include { ASSEMBLY_DEPTH                 }  from '../modules/assembly_depth'
 include { COMBINE_REPORTS                }  from '../modules/combine_reports'
 include { SPECCHECK                      } from '../modules/speccheck'
 include { SPECCHECK_SUMMARY              } from '../modules/speccheck'
+include { CONFINDR_FASTQS                } from '../modules/contamination'
 
 workflow LR_ASSEMBLY{
 
