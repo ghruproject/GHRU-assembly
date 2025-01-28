@@ -77,7 +77,7 @@ process SYLPH_FASTQS {
     label 'process_low'
     tag { meta.sample_id }
 
-    publishDir "${params.outdir}/sylph_summary", mode: 'copy', pattern: "*.csv"
+    publishDir "${params.outdir}/sylph_summary", mode: 'copy', pattern: "*.tsv"
 
 
     input:
@@ -88,7 +88,7 @@ process SYLPH_FASTQS {
     tuple val(meta), path(slyph_report)
 
     script:
-    slyph_report="${meta.sample_id}_slyph_report.csv"
+    slyph_report="${meta.sample_id}_slyph_report.tsv"
 
     """
     sylph profile $database_directory/gtdb-r220-c1000-dbv1.syldb -1 $short_reads1 -2 $short_reads2 > $slyph_report
