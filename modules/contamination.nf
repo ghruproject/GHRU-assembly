@@ -51,7 +51,7 @@ process CONFINDR_FASTQS {
     label 'process_low'
     tag { meta.sample_id }
 
-    publishDir "${params.outdir}/confindr_summary", mode: 'copy', pattern: "*.tsv"
+    publishDir "${params.outdir}/confindr_summary", mode: 'copy', pattern: "*.csv"
 
 
     input:
@@ -60,7 +60,7 @@ process CONFINDR_FASTQS {
     val(type)
     
     output:
-    tuple val(meta), path(csv_report)
+    tuple val(meta), path(confindr_report)
 
     script:
     read_one="${short_reads1}"
@@ -68,7 +68,6 @@ process CONFINDR_FASTQS {
     fastqs="${meta.sample_id}_fastqs"
     confindr_out="${meta.sample_id}_confindr_out"
     confindr_report="${meta.sample_id}_confindr_report.csv"
-    csv_report="${meta.sample_id}_confindr_report.tsv"
 
     """
     mkdir $fastqs
