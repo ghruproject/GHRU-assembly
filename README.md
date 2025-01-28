@@ -31,6 +31,13 @@ The pipeline is built as parth of GHRU project funded by NIHR.
     
     Download and unzip/extract the [latest release]
 
+2. You will also need to download the required databases. There is a helper python script called prepare_database.py that will download the required databases for you. You can run it with the following command:
+    ```
+    python prepare_database.py
+    ```
+    This will download the databases to the data directory in the project folder.
+    
+
 # Parameters
 ## Input/output options
 

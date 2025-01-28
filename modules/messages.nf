@@ -29,6 +29,5 @@ def resolveRelativePath(basePath, relativePath) {
     // Ensure basePath is absolute
     def base = file(basePath).toAbsolutePath()
     def resolvedPath = file("${base}/${relativePath}").toAbsolutePath()
-    print resolvedPath
     return resolvedPath
 }

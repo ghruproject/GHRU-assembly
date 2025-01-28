@@ -50,7 +50,7 @@ workflow {
     SR_ASSEMBLY (assembly.srt)
 
     //run long read assembly workflow
-    LR_ASSEMBLY (assembly.lng)
+    //LR_ASSEMBLY (assembly.lng)
 
     //run hybrid assembly workflow
     // Split Hybrid assembly reads 
@@ -61,7 +61,7 @@ workflow {
     }
     .set { hybSplit }
 
-    HY_ASSEMBLY (hybSplit.shortreads, hybSplit.longreads)
+    //HY_ASSEMBLY (hybSplit.shortreads, hybSplit.longreads)
 
 
 }
