@@ -73,7 +73,7 @@ process CONFINDR_FASTQS {
     mkdir $fastqs
     cp $read_one $fastqs
     cp $read_two $fastqs
-    confindr -i $fastqs -o $confindr_out --rmlst -dt Illumina -d $database_directory
+    confindr -i $fastqs -o $confindr_out --rmlst -dt Illumina -d $database_directory/confindr_db
     mv $confindr_out/confindr_report.csv $confindr_report
     sed 's/\t/,/g' $confindr_report > ${csv_report}
     """
