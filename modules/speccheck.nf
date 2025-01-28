@@ -2,6 +2,7 @@ process SPECCHECK{
     tag { meta.sample_id }
     label 'process_single'
     label 'speccheck_container'
+    publishDir "${params.outdir}/speccheck", mode: 'copy'    
     
     input:
     tuple val(meta), path(quast_report, stageAs: 'quast.report.tsv')
@@ -21,21 +22,24 @@ process SPECCHECK{
 }
 
 process SPECCHECK_SUMMARY{
-    tag { meta.sample_id }
+    tag 'QC Summary' 
     label 'process_single'
     label 'speccheck_container'
     
-    publishDir "${params.outdir}/qc_summary", mode: 'copy', pattern: "*.csv"
+    publishDir "${params.outdir}/qc_summary", mode: 'copy'
 
     input:
-    tuple val(meta), path(spec_report)
+    path(spec_report)
+    val(type)
 
     output:
-    tuple val(meta), path("qc_report.${meta.type}.csv"), emit: report
+    path("qc_report.${type}.csv"), emit: report
+    path("qc_report.${type}.html"), emit: html
 
     script:
     """
-    python /app/speccheck.py summary ./ 
-    mv qc_report.csv qc_report.${meta.type}.csv
+    python /app/speccheck.py summary ./  --plot --templates /app/templates/report.html 
+    mv yes.html qc_report.${type}.html
+    mv qc_report.csv qc_report.${type}.csv
     """   
 }
