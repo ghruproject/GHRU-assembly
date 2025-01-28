@@ -45,3 +45,35 @@ process CONTAMINATION_CHECKM {
     mv ${checkm_qa_out} ${report}
     """
 }
+
+process CONFINDR_FASTQS {
+    label 'confindr_container'
+    label 'process_low'
+    tag { meta.sample_id }
+    
+    publishDir "${params.outdir}/confindr_summary", mode: 'copy', pattern: "*.tsv"
+
+
+    input:
+    tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
+    
+    output:
+    tuple val(meta), path(csv_report)
+
+    script:
+    read_one="${short_reads1}"
+    read_two="${short_reads2}"
+    fastqs="${meta.sample_id}_fastqs"
+    confindr_out="${meta.sample_id}_confindr_out"
+    confindr_report="${meta.sample_id}_confindr_report.csv"
+    csv_report="${meta.sample_id}_confindr_report.tsv"
+
+    """
+    mkdir $fastqs
+    cp $read_one $fastqs
+    cp $read_two $fastqs
+    confindr -i $fastqs -o $confindr_out --rmlst -dt Illumina -d /opt/confindr_db/confindr_db
+    mv $confindr_out/confindr_report.csv $confindr_report
+    sed 's/\t/,/g' $confindr_report > ${csv_report}
+    """
+}

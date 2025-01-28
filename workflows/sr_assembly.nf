@@ -15,6 +15,7 @@ include { COMBINE_REPORTS                } from '../modules/combine_reports'
 include { resolveRelativePath            } from '../modules/messages'
 include { SPECCHECK                      } from '../modules/speccheck'
 include { SPECCHECK_SUMMARY              } from '../modules/speccheck'
+include { CONFINDR_FASTQS                } from '../modules/contamination'
 
 workflow SR_ASSEMBLY{
 
@@ -37,6 +38,9 @@ workflow SR_ASSEMBLY{
 
     //create channel called processed short reads from trimming out
     processed_short_reads= TRIMMING.out
+
+    // Confindr on reads 
+    CONFINDR_FASTQS(processed_short_reads)
 
     //do fastqc for the trimmed reads
     FASTQC(processed_short_reads)
@@ -63,7 +67,7 @@ workflow SR_ASSEMBLY{
     //Consolidate all reports
     COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out)
 
-    SPECCHECK(QUAST.out.orireport, SPECIATION.out, CONTAMINATION_CHECKM.out)
+    SPECCHECK(QUAST.out.orireport, SPECIATION.out, CONTAMINATION_CHECKM.out, CONFINDR_FASTQS.out)
 
     // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
     SPECCHECK_SUMMARY(SPECCHECK.out.report.collect())

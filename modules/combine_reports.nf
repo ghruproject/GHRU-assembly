@@ -12,6 +12,7 @@ process COMBINE_REPORTS{
     tuple val(meta_3), path(contamination_report, stageAs: 'contamination.tsv')
     tuple val(meta_4), path(depth_report, stageAs: 'depth.tsv') 
 
+
     output:
     tuple val(meta.sample_id), path("${meta.sample_id}.${meta.type}.tsv"), emit: report
 

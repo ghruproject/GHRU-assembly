@@ -8,6 +8,7 @@ process SPECCHECK{
     tuple val(meta_1), val(species_name)
     tuple val(meta_2), path(species_report, stageAs: 'species.tsv')
     tuple val(meta_3), path(contamination_report, stageAs: 'contamination.tsv')
+    tuple val(meta_4), path(confindr_report, stageAs: 'confindr.tsv')
 
     output:
     tuple val(meta), path("${meta.sample_id}.${meta.type}.csv"), emit: report
