@@ -13,6 +13,8 @@ include { COMBINE_REPORTS                }  from '../modules/combine_reports'
 include { SPECCHECK                      } from '../modules/speccheck'
 include { SPECCHECK_SUMMARY              } from '../modules/speccheck'
 include { CONFINDR_FASTQS                } from '../modules/contamination'
+include { SYLPH_FASTQS                   } from '../modules/contamination'
+
 
 workflow LR_ASSEMBLY{
 
@@ -35,8 +37,9 @@ workflow LR_ASSEMBLY{
     
     //processed_long_read assembly channel
     preprocessed_long_reads=PORECHOP.out.long_read_assembly
-    
-    CONFINDR_FASTQS(preprocessed_long_reads, params.database_directory, "Nanopore")
+    SYLPH_FASTQS(preprocessed_long_reads, params.database_directory)
+
+    CONFINDR_FASTQS(preprocessed_long_reads, params.database_directory, "Nanopore", SYLPH_FASTQS.out)
 
     //do long read assembly with dragonflye
     ASSEMBLY_DRAGONFLYE(preprocessed_long_reads, params.medaka_model)

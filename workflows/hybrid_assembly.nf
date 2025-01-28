@@ -18,9 +18,10 @@ include { ASSEMBLY_DEPTH as ASSEMBLY_DEPTH_LR } from '../modules/assembly_depth'
 include { COMBINE_DEPTH_REPORTS               } from '../modules/assembly_depth'
 include { COMBINE_REPORTS                     } from '../modules/combine_reports'
 include { resolveRelativePath                 } from '../modules/messages'
-include { SPECCHECK                      } from '../modules/speccheck'
-include { SPECCHECK_SUMMARY              } from '../modules/speccheck'
-include { CONFINDR_FASTQS                } from '../modules/contamination'
+include { SPECCHECK                           } from '../modules/speccheck'
+include { SPECCHECK_SUMMARY                   } from '../modules/speccheck'
+include { CONFINDR_FASTQS                     } from '../modules/contamination'
+include { SYLPH_FASTQS                        } from '../modules/contamination'
 
 workflow HY_ASSEMBLY{
 
@@ -49,8 +50,9 @@ workflow HY_ASSEMBLY{
     //do fastqc for the trimmed reads
     FASTQC(processed_short_reads)
     
-    CONFINDR_FASTQS(processed_short_reads, params.database_directory, "Illumina")
-    
+    SYLPH_FASTQS(processed_short_reads, params.database_directory)
+    CONFINDR_FASTQS(processed_short_reads, params.database_directory, "Illumina", SYLPH_FASTQS.out)
+
 
     long_reads_with_genome_size = CALCULATE_GENOME_SIZE_LR(hyb_long)
     //qc of long reads using nanoplot
