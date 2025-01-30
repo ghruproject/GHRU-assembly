@@ -73,7 +73,7 @@ workflow HY_ASSEMBLY{
 
     //speciate with speciator
     SPECIATION(UNICYCLER.out)
-    SPECIATION.out.species_name.map{ file -> file.text.trim() } .set { species }    
+    SPECIATION.out.species_name.map{ file -> file[1].text.trim() } .set { species }    
     ARIBA_CONTAM(processed_short_reads, species)
 
     //contamination check checkm

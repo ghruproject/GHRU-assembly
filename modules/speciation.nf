@@ -9,7 +9,7 @@ process SPECIATION {
     tuple val(meta), path(fasta_file)
 
     output:
-    path(species_name), emit: species_name
+    tuple val(meta), path(species_name), emit: species_name
     tuple val(meta), path(species_report), emit: species_report
 
     script:

@@ -49,7 +49,7 @@ workflow LR_ASSEMBLY{
 
     //speciate with speciator
     SPECIATION(ASSEMBLY_DRAGONFLYE.out)
-    SPECIATION.out.species_name.map{ file -> file.text.trim() } .set { species }
+    SPECIATION.out.species_name.map{ file -> file[1].text.trim() } .set { species }
 
    //contamination check checkm
     CHECKM_MARKERS(species)

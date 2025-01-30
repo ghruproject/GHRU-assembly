@@ -59,7 +59,7 @@ workflow SR_ASSEMBLY{
 
     //speciate with speciator
     SPECIATION(ASSEMBLY_SHOVILL.out)
-    SPECIATION.out.species_name.map{ file -> file.text.trim() } .set { species }
+    SPECIATION.out.species_name.map{ file -> file[1].text.trim() } .set { species }
     ARIBA_CONTAM(processed_short_reads, species)
     //contamination check checkm
     CHECKM_MARKERS(species)
