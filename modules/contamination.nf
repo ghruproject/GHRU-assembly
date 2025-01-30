@@ -1,10 +1,9 @@
 process CHECKM_MARKERS {
-    tag { meta.sample_id }
     label 'process_low'
     label 'checkm_container'
     
     input:
-    tuple val(meta), val(genusNAME)
+    val(genusNAME)
 
     output:
     path(marker_file)
