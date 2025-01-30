@@ -59,9 +59,10 @@ workflow SR_ASSEMBLY{
 
     //speciate with speciator
     SPECIATION(ASSEMBLY_SHOVILL.out)
-    ARIBA_CONTAM(processed_short_reads, SPECIATION.out.species_name)
+    SPECIATION.out.species_name.map{ file -> file.text.trim() } .set { species }
+    ARIBA_CONTAM(processed_short_reads, species)
     //contamination check checkm
-    CHECKM_MARKERS(SPECIATION.out.species_name)
+    CHECKM_MARKERS(species)
     CONTAMINATION_CHECKM(ASSEMBLY_SHOVILL.out, CHECKM_MARKERS.out)
 
     //calculate bases
@@ -73,7 +74,7 @@ workflow SR_ASSEMBLY{
     //Consolidate all reports
     COMBINE_REPORTS(QUAST.out.report, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.report)
 
-    SPECCHECK(QUAST.out.orireport, SPECIATION.out.species_name, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.details)
+    SPECCHECK(QUAST.out.orireport, species, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.details)
 
     // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
     sum = SPECCHECK.out.report.map({ meta, filepath -> filepath}).collect()
