@@ -93,3 +93,26 @@ process SYLPH_FASTQS {
     sylph profile /opt/sylph/gtdb-r220-c1000-dbv1.syldb -1 $short_reads1 -2 $short_reads2 > $slyph_report
     """
 }
+
+
+process SYLPH_FASTQS_LR {
+    label 'sylph_container'
+    label 'process_low'
+    tag { meta.sample_id }
+
+    publishDir "${params.outdir}/sylph_summary", mode: 'copy', pattern: "*.tsv"
+
+
+    input:
+    tuple val(meta), path(long_reads), val(genome_size)
+    
+    output:
+    tuple val(meta), path(slyph_report)
+
+    script:
+    slyph_report="${meta.sample_id}_slyph_report.tsv"
+
+    """
+    sylph profile /opt/sylph/gtdb-r220-c1000-dbv1.syldb $long_reads  > $slyph_report
+    """
+}

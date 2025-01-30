@@ -23,10 +23,15 @@ def build_dockerfile(workdir):
     print(f"Building Docker image with command: {command}")
     result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
     print(result.stdout)
+    # Tag the Docker image
+    tag_command = "docker tag happykhan/ariba_contam:0.1.0 happykhan/ariba_contam:0.1.0"
+    print(f"Tagging Docker image with command: {tag_command}")
+    result = subprocess.run(tag_command, shell=True, capture_output=True, text=True, check=True)
+    print(result.stdout)
     # Push the Docker image to the repository
     command = "docker push happykhan/ariba_contam:0.1.0"
     print(f"Pushing Docker image with command: {command}")
-    # result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
+    result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
     # print(result.stdout)
 
 def create_dockerfile(directory, workdir):

@@ -46,8 +46,12 @@ def give_results(output_dir, output_prefix):
         gene_status = {}
         for line in lines[1:]:
             fields = line.strip().split('\t')
-            gene = fields[0]
-            ctgs = int(fields[4])
+            gene = fields[0]#
+            # Check if ctgs is a number and handle exceptions
+            try:
+                ctgs = int(fields[4])
+            except ValueError:
+                ctgs = 99
             hetmin = fields[6]
             status = 'PASS'
             if ctgs > 1 or hetmin != '.':
@@ -87,6 +91,16 @@ def no_result_stub(output_dir, output_prefix):
     with open(f"{output_dir}/{output_prefix}_qc_summary.tsv", 'w', encoding='utf-8') as qc_file:
         qc_file.write("ST\tPassed\tTotal\tStatus\n")
         qc_file.write("NA\t0\t0\tPASS\n")
+
+    with open(f"{output_dir}/{output_prefix}_mlst_report.details.tsv", 'w', encoding='utf-8') as qc_file:
+        qc_file.write('gene\tallele\tcov\tpc\tctgs\tdepth\thetmin\thets\n')
+        qc_file.write('gapA\tND\tND\tND\tND\tND\tND\tND\n')
+        qc_file.write('infB\tND\tND\tND\tND\tND\tND\tND\n')
+        qc_file.write('mdh\tND\tND\tND\tND\tND\tND\tND\n')
+        qc_file.write('pgi\tND\tND\tND\tND\tND\tND\tND\n')
+        qc_file.write('phoE\tND\tND\tND\tND\tND\tND\tND\n')
+        qc_file.write('rpoB\tND\tND\tND\tND\tND\tND\tND\n')
+        qc_file.write('tonB\tND\tND\tND\tND\tND\tND\tND\n')
 
 
 def main():
