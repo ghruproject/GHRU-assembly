@@ -19,12 +19,12 @@ def main(args):
 
 def build_dockerfile(workdir):
     # Build the Dockerfile
-    command = f"docker build -t happykhan/slyph:0.1.0 {workdir}"
+    command = f"docker build -t happykhan/sylph:0.1.0 {workdir}"
     print(f"Building Docker image with command: {command}")
     result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
     print(result.stdout)
     # Push the Docker image to the repository
-    command = "docker push happykhan/slyph:0.1.0"
+    command = "docker push happykhan/sylph:0.1.0"
     print(f"Pushing Docker image with command: {command}")
     # result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
     # print(result.stdout)
