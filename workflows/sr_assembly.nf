@@ -71,7 +71,7 @@ workflow SR_ASSEMBLY{
     ASSEMBLY_DEPTH(QUAST.out.assembly_length, CALCULATEBASES_SR.out, "short_reads")
 
     //Consolidate all reports
-    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.details)
+    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.report)
 
     SPECCHECK(QUAST.out.orireport, SPECIATION.out.species_name, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.details)
 

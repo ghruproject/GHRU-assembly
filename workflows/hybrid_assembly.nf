@@ -95,7 +95,7 @@ workflow HY_ASSEMBLY{
     COMBINE_DEPTH_REPORTS(ASSEMBLY_DEPTH_SR.out, ASSEMBLY_DEPTH_LR.out)
  
     //Consolidate all reports
-    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.details)
+    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.report)
 
     SPECCHECK(QUAST.out.orireport, SPECIATION.out.species_name, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.details)
 
