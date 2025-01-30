@@ -42,13 +42,7 @@
           "description": "Adapter file for trimming",
           "format": "file-path",
           "default": "${projectDir}/data/adapters.fasta"
-        },
-        "database_directory": {
-          "type": "string",
-          "description": "Directory of databases",
-          "format": "directory-path",
-          "default": "${projectDir}/assembly_databases"
-        },        
+        },     
         "min_contig_length": {
           "type": "integer",
           "hidden": true,

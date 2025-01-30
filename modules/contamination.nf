@@ -82,7 +82,6 @@ process SYLPH_FASTQS {
 
     input:
     tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
-    path(database_directory)
     
     output:
     tuple val(meta), path(slyph_report)
@@ -91,6 +90,6 @@ process SYLPH_FASTQS {
     slyph_report="${meta.sample_id}_slyph_report.tsv"
 
     """
-    sylph profile $database_directory/gtdb-r220-c1000-dbv1.syldb -1 $short_reads1 -2 $short_reads2 > $slyph_report
+    sylph profile /opt/sylph/gtdb-r220-c1000-dbv1.syldb -1 $short_reads1 -2 $short_reads2 > $slyph_report
     """
 }

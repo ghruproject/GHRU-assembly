@@ -17,6 +17,9 @@ include { SPECCHECK                      } from '../modules/speccheck'
 include { SPECCHECK_SUMMARY              } from '../modules/speccheck'
 include { CONFINDR_FASTQS                } from '../modules/contamination'
 include { SYLPH_FASTQS                   } from '../modules/contamination'
+include { ARIBA_CONTAM                   } from '../modules/ariba'
+
+
 
 workflow SR_ASSEMBLY{
 
@@ -41,8 +44,10 @@ workflow SR_ASSEMBLY{
     processed_short_reads= TRIMMING.out
 
     // Confindr on reads 
-    SYLPH_FASTQS(processed_short_reads, params.database_directory)
-    CONFINDR_FASTQS(processed_short_reads, params.database_directory, "Illumina", SYLPH_FASTQS.out)
+    SYLPH_FASTQS(processed_short_reads)
+
+    // CONFINDR_FASTQS(processed_short_reads, params.database_directory, "Illumina", SYLPH_FASTQS.out)
+    
     //do fastqc for the trimmed reads
     FASTQC(processed_short_reads)
 
@@ -54,7 +59,7 @@ workflow SR_ASSEMBLY{
 
     //speciate with speciator
     SPECIATION(ASSEMBLY_SHOVILL.out)
-
+    ARIBA_CONTAM(processed_short_reads, SPECIATION.out.species_name)
     //contamination check checkm
     CHECKM_MARKERS(SPECIATION.out.species_name)
     CONTAMINATION_CHECKM(ASSEMBLY_SHOVILL.out, CHECKM_MARKERS.out)

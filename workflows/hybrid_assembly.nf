@@ -22,6 +22,7 @@ include { SPECCHECK                           } from '../modules/speccheck'
 include { SPECCHECK_SUMMARY                   } from '../modules/speccheck'
 include { CONFINDR_FASTQS                     } from '../modules/contamination'
 include { SYLPH_FASTQS                        } from '../modules/contamination'
+include { ARIBA_CONTAM                        } from '../modules/ariba'
 
 workflow HY_ASSEMBLY{
 
@@ -50,8 +51,8 @@ workflow HY_ASSEMBLY{
     //do fastqc for the trimmed reads
     FASTQC(processed_short_reads)
     
-    SYLPH_FASTQS(processed_short_reads, params.database_directory)
-    CONFINDR_FASTQS(processed_short_reads, params.database_directory, "Illumina", SYLPH_FASTQS.out)
+    SYLPH_FASTQS(processed_short_reads)
+    // CONFINDR_FASTQS(processed_short_reads, params.database_directory, "Illumina", SYLPH_FASTQS.out)
 
 
     long_reads_with_genome_size = CALCULATE_GENOME_SIZE_LR(hyb_long)
@@ -72,6 +73,7 @@ workflow HY_ASSEMBLY{
 
     //speciate with speciator
     SPECIATION(UNICYCLER.out)
+    ARIBA_CONTAM(processed_short_reads, SPECIATION.out.species_name)
 
     //contamination check checkm
     CHECKM_MARKERS(SPECIATION.out.species_name)

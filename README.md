@@ -23,20 +23,13 @@ The pipeline is built as parth of GHRU project funded by NIHR.
 - **Both Long and Short Reads**: Assembled using **Unicycler**.
 
 ### Install 
-1. Clone the repository
-    ```
-    git clone   https://github.com/cgps-discovery/GHRU-assembly.git
-    ```
-    or 
-    
-    Download and unzip/extract the [latest release]
+Clone the repository
+```
+git clone   https://github.com/cgps-discovery/GHRU-assembly.git
+```
+or 
 
-2. You will also need to download the required databases. There is a helper python script called prepare_database.py that will download the required databases for you. You can run it with the following command:
-    ```
-    python prepare_database.py
-    ```
-    This will download the databases to the data directory in the project folder.
-    
+Download and unzip/extract the latest release.
 
 # Parameters
 ## Input/output options

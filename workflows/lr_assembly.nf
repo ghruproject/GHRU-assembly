@@ -37,9 +37,9 @@ workflow LR_ASSEMBLY{
     
     //processed_long_read assembly channel
     preprocessed_long_reads=PORECHOP.out.long_read_assembly
-    SYLPH_FASTQS(preprocessed_long_reads, params.database_directory)
+    SYLPH_FASTQS(preprocessed_long_reads)
 
-    CONFINDR_FASTQS(preprocessed_long_reads, params.database_directory, "Nanopore", SYLPH_FASTQS.out)
+    // CONFINDR_FASTQS(preprocessed_long_reads, "Nanopore", SYLPH_FASTQS.out)
 
     //do long read assembly with dragonflye
     ASSEMBLY_DRAGONFLYE(preprocessed_long_reads, params.medaka_model)

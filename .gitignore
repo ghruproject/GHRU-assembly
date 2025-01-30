@@ -9,3 +9,5 @@ samplesheet.csv
 *.dmnd
 .venv
 .ipynb_checkpoints
+gtdb*
+ariba_mlst
