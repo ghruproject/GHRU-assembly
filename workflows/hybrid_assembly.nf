@@ -95,9 +95,10 @@ workflow HY_ASSEMBLY{
     COMBINE_DEPTH_REPORTS(ASSEMBLY_DEPTH_SR.out, ASSEMBLY_DEPTH_LR.out)
  
     //Consolidate all reports
-    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out, SYLPH_FASTQS.out, ARIBA_CONTAM.report)
+    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.details)
 
-    SPECCHECK(QUAST.out.orireport, SPECIATION.out, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out, SYLPH_FASTQS.out, ARIBA_CONTAM.details)
+    SPECCHECK(QUAST.out.orireport, SPECIATION.out.species_name, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.details)
+
 
     // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
     sum = SPECCHECK.out.report.map({ meta, filepath -> filepath}).collect()

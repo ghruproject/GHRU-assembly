@@ -61,9 +61,9 @@ workflow LR_ASSEMBLY{
     ASSEMBLY_DEPTH(QUAST.out.assembly_length,CALCULATEBASES_LR.out, "long_reads")
 
     //Consolidate all reports
-    COMBINE_REPORTS_LR(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, SYLPH_FASTQS_LR.out)
+    COMBINE_REPORTS_LR(QUAST.out.report, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, SYLPH_FASTQS_LR.out)
 
-    SPECCHECK_LR(QUAST.out.orireport, SPECIATION.out, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, SYLPH_FASTQS_LR.out)
+    SPECCHECK_LR(QUAST.out.orireport, SPECIATION.out.species_name, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, SYLPH_FASTQS_LR.out)
 
     // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
     sum = SPECCHECK_LR.out.report.map({ meta, filepath -> filepath}).collect()
