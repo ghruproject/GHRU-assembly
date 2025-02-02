@@ -32,7 +32,6 @@ workflow SR_ASSEMBLY{
     main:
     //calculate genomesize for which it is not available and create a channel for reads with genome size
     reads_with_genome_size = CALCULATE_GENOME_SIZE_SR(srt_reads)
-
     //determine min read length required for trimming
     DETERMINE_MIN_READ_LENGTH(reads_with_genome_size)
 

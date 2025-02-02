@@ -38,8 +38,10 @@
           "genome_size": {
             "errorMessage": "Expected genome size, if known.",
             "type": "string",
+            "pattern": "^([0-9.]+)([mM]*)$",
+            "default": "",
             "meta": ["genome_size"]
-          },                     
+          }                     
       },
       "required": ["sample_id"]
     },
