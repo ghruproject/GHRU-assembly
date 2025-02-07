@@ -1,11 +1,13 @@
 .nextflo*
 work
 *out*
-*input*
 *.png
 *.html
 *.dag
-*check*
 *test*
 samplesheet.csv
 *.dmnd
+.venv
+.ipynb_checkpoints
+gtdb*
+ariba_mlst

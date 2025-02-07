@@ -1,37 +1,36 @@
-process CALCULATE_GENOME_SIZE{
+process CALCULATE_GENOME_SIZE_SR {
+    tag { meta.sample_id }
+    label 'process_low'
     label 'kmc_container'
 
-     tag { sample_id }
-
     input:
-     tuple val(sample_id), path(short_reads1), path(short_reads2), val(genome_size)
+    tuple val(meta), path(short_reads1), path(short_reads2)
 
     output:
-    tuple val(sample_id), path(short_reads1), path(short_reads2), env(genome_size)
+    tuple val(meta), path(short_reads1), path(short_reads2), env('genome_size')
 
     script:
     
     """
     read_one="${short_reads1}"
     read_two="${short_reads2}"
-    GSIZE="${genome_size }"
+    GSIZE="${meta.genome_size}"
     source get_genome_size.sh
     genome_size=`cat gsize.txt`
     """
 }
 
 
-process DETERMINE_MIN_READ_LENGTH{
-    label 'bash_container'
-    //label 'process_low'
+process DETERMINE_MIN_READ_LENGTH {
+    tag { meta.sample_id }
+    label 'process_single'
+    label 'bash_container'        
     
-    tag { sample_id }
-
     input:
-    tuple val(sample_id), path(short_reads1), path(short_reads2), val(genome_size)
+    tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
     
     output:
-    env(min_length)
+    env('min_length')
 
     script:
 
@@ -43,27 +42,24 @@ process DETERMINE_MIN_READ_LENGTH{
 }
 
 process TRIMMING{
-
+    tag { meta.sample_id }
+    label 'process_single'
     label 'trimmomatic_container'
 
-    tag "$sample_id"
-
-    //publishDir "${params.output}/processed_short_reads", mode: 'copy'
-
     input:
-    tuple val(sample_id), path(short_reads1), path(short_reads2), val(genome_size)
+    tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
     val(min_read_length)
     path('adapter_file.fas')
 
 
     output:
-    tuple val(sample_id), path(processed_one), path(processed_two), val(genome_size)
+    tuple val(meta), path(processed_one), path(processed_two), val(genome_size)
 
     script:
     read_one="${short_reads1}"
     read_two="${short_reads2}"
-    processed_one="processed-${sample_id}_1.fastq.gz"
-    processed_two="processed-${sample_id}_2.fastq.gz"
+    processed_one="processed-${meta.sample_id}_1.fastq.gz"
+    processed_two="processed-${meta.sample_id}_2.fastq.gz"
 
     """
     trimmomatic PE -threads $task.cpus -phred33 $read_one $read_two $processed_one /dev/null $processed_two /dev/null ILLUMINACLIP:adapter_file.fas:2:30:10 SLIDINGWINDOW:4:20 LEADING:25 TRAILING:25 MINLEN:${min_read_length}  
@@ -72,20 +68,18 @@ process TRIMMING{
 
 //Post trimming fastqc
 process FASTQC{
-
-    //define container
+    tag { meta.sample_id }
+    label 'process_single'
     label 'fastqc_container'
 
-    tag "$sample_id"
-
-    publishDir "${params.output}/post_trimming_short_read_stats", mode: 'copy'
+    publishDir "${params.outdir}/post_trimming_short_read_stats", mode: 'copy'
 
     input:
-    tuple val(sample_id), path(short_reads1), path(short_reads2), val(genome_size)
+    tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
 
     output:
-    tuple val(sample_id), path("*.html"), emit: html
-    tuple val(sample_id), path("*.zip") , emit: zip
+    tuple val(meta), path("*.html"), emit: html
+    tuple val(meta), path("*.zip") , emit: zip
 
     script:
     read_one="${short_reads1}"
@@ -93,10 +87,10 @@ process FASTQC{
     """
     fastqc $read_one $read_two
 
-    mv processed-"$sample_id"_1_fastqc.zip "$sample_id"_1.zip
-    mv processed-"$sample_id"_1_fastqc.html "$sample_id"_1.html
-    mv processed-"$sample_id"_2_fastqc.zip "$sample_id"_2.zip
-    mv processed-"$sample_id"_2_fastqc.html "$sample_id"_2.html
+    mv processed-"$meta.sample_id"_1_fastqc.zip "$meta.sample_id"_1.zip
+    mv processed-"$meta.sample_id"_1_fastqc.html "$meta.sample_id"_1.html
+    mv processed-"$meta.sample_id"_2_fastqc.zip "$meta.sample_id"_2.zip
+    mv processed-"$meta.sample_id"_2_fastqc.html "$meta.sample_id"_2.html
 
     """   
 }

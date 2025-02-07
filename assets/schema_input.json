@@ -1,0 +1,51 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/cgps-discovery/GHRU-assembly/main/assets/schema_input.json",
+    "title": "GHRU assembly pipeline - params.input schema",
+    "description": "Schema for the file provided with params.input",
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "sample_id": {
+          "type": "string",
+          "pattern": "^\\S+$",
+          "errorMessage": "Sample name must be provided and cannot contain spaces",
+          "meta": ["sample_id"]
+          
+        },
+        "short_reads1": {
+          "type": "string",
+          "pattern": "^\\S+\\.f(ast)?q\\.gz$",
+          "format": "file-path",
+          "exists": true,
+          "errorMessage": "FastQ file for reads 1 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+        },
+        "short_reads2": {
+          "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
+          "type": "string",
+          "pattern": "^\\S+\\.f(ast)?q\\.gz$",
+          "format": "file-path",
+          "exists": true
+        },
+        "long_reads": {
+            "errorMessage": "FastQ file for long reads cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
+            "type": "string",
+            "pattern": "^\\S+\\.f(ast)?q\\.gz$",
+            "format": "file-path",
+            "exists": true
+          },     
+          "genome_size": {
+            "errorMessage": "Expected genome size, if known.",
+            "type": "string",
+            "pattern": "^([0-9.]+)([mM]*)$",
+            "default": "",
+            "meta": ["genome_size"]
+          }                     
+      },
+      "required": ["sample_id"]
+    },
+    "allOf": [
+        {"uniqueEntries": ["sample_id"]}
+    ]    
+  }

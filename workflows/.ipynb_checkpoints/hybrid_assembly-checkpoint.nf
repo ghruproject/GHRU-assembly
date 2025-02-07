@@ -18,11 +18,9 @@ include { ASSEMBLY_DEPTH as ASSEMBLY_DEPTH_LR } from '../modules/assembly_depth'
 include { COMBINE_DEPTH_REPORTS               } from '../modules/assembly_depth'
 include { COMBINE_REPORTS                     } from '../modules/combine_reports'
 include { resolveRelativePath                 } from '../modules/messages'
-include { SPECCHECK                           } from '../modules/speccheck'
-include { SPECCHECK_SUMMARY                   } from '../modules/speccheck'
-include { CONFINDR_FASTQS                     } from '../modules/contamination'
-include { SYLPH_FASTQS                        } from '../modules/contamination'
-include { ARIBA_CONTAM                        } from '../modules/ariba'
+include { SPECCHECK                      } from '../modules/speccheck'
+include { SPECCHECK_SUMMARY              } from '../modules/speccheck'
+include { CONFINDR_FASTQS                } from '../modules/contamination'
 
 workflow HY_ASSEMBLY{
 
@@ -51,9 +49,8 @@ workflow HY_ASSEMBLY{
     //do fastqc for the trimmed reads
     FASTQC(processed_short_reads)
     
-    SYLPH_FASTQS(processed_short_reads)
-    // CONFINDR_FASTQS(processed_short_reads, params.database_directory, "Illumina", SYLPH_FASTQS.out)
-
+    CONFINDR_FASTQS(processed_short_reads, params.database_directory, "Illumina")
+    
 
     long_reads_with_genome_size = CALCULATE_GENOME_SIZE_LR(hyb_long)
     //qc of long reads using nanoplot
@@ -73,11 +70,9 @@ workflow HY_ASSEMBLY{
 
     //speciate with speciator
     SPECIATION(UNICYCLER.out)
-    SPECIATION.out.species_name.map{ file -> file[1].text.trim() } .set { species }    
-    ARIBA_CONTAM(processed_short_reads, species)
 
     //contamination check checkm
-    CHECKM_MARKERS(species)
+    CHECKM_MARKERS(SPECIATION.out.species_name)
     CONTAMINATION_CHECKM(UNICYCLER.out, CHECKM_MARKERS.out)
     
     //calculate bases
@@ -96,10 +91,9 @@ workflow HY_ASSEMBLY{
     COMBINE_DEPTH_REPORTS(ASSEMBLY_DEPTH_SR.out, ASSEMBLY_DEPTH_LR.out)
  
     //Consolidate all reports
-    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.report)
+    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out)
 
-    SPECCHECK(QUAST.out.orireport, species, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.details)
-
+    SPECCHECK(QUAST.out.orireport, SPECIATION.out, CONTAMINATION_CHECKM.out)
 
     // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
     sum = SPECCHECK.out.report.map({ meta, filepath -> filepath}).collect()

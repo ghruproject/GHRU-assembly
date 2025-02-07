@@ -1,40 +1,39 @@
 process ASSEMBLY_DEPTH {
-
-    label 'bash_container'
+    tag { meta.sample_id }
     label 'process_medium'
-    
-    tag "$sample_id"
+    label 'bash_container'
 
     input:
-    tuple val(sample_id), val(type), val(assembly_length)
-    tuple val(sample_id), val(total_bases)
+    tuple val(meta), val(assembly_length)
+    tuple val(meta_again), val(total_bases)
     val(read_type)
+
     output:
-    tuple val(sample_id), path("${sample_id}.${type}${read_type}.depth.tsv"), emit: report
+    tuple val(meta), path("${meta.sample_id}.${meta.type}${read_type}.depth.tsv"), emit: report
 
     script:
-    depth_report="${sample_id}.${type}${read_type}.depth.tsv"
+    depth_report="${meta.sample_id}.${meta.type}${read_type}.depth.tsv"
     """
     depth=\$(echo "scale=2; ${total_bases} / ${assembly_length}" | bc)
 
     #Write header and values to the TSV file
     echo -e "Sample_id\tRead_type\tDepth" > ${depth_report}
-    echo -e "${sample_id}\t${type}\t\${depth}" >> ${depth_report}    
+    echo -e "${meta.sample_id}\t${meta.type}\t\${depth}" >> ${depth_report}    
     """
 }
 
 // Process to combine the outputs
 process COMBINE_DEPTH_REPORTS {
-    
+    tag { meta.sample_id }    
     label 'bash_container'
     label 'process_medium'
 
     input:
-    tuple val(sample_id), path(sr_depth_reports)
-    tuple val(sample_id), path(lr_depth_reports)
+    tuple val(meta), path(sr_depth_reports)
+    tuple val(meta_again), path(lr_depth_reports)
 
     output:
-    tuple val(sample_id), path ("combined_depth_report.tsv")
+    tuple val(meta), path ("combined_depth_report.tsv")
 
     script:
     """

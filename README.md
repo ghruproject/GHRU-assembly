@@ -1,5 +1,5 @@
 # GHRU2 New Assembly Pipeline
-[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-24.04.4-23aa62.svg)](https://www.nextflow.io/)
+[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-24.10.3-23aa62.svg)](https://www.nextflow.io/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 
 ## Overview
@@ -22,32 +22,43 @@ The pipeline is built as parth of GHRU project funded by NIHR.
 - **Long Reads Only**: Assembled using **Dragonflye**.
 - **Both Long and Short Reads**: Assembled using **Unicycler**.
 
-### Setup 
-1. Clone the repository
-    ```
-    git clone   https://github.com/cgps-discovery/GHRU-assembly.git
-    ```
-    or 
-    
-    Download and unzip/extract the [latest release]
+### Install 
+Clone the repository
+```
+git clone   https://github.com/cgps-discovery/GHRU-assembly.git
+```
+or 
 
-## Inputs
+Download and unzip/extract the latest release.
 
-### Mandatory
-- `--samplesheet` (string): The absolute path to the CSV file containing the sample information. This is the only mandatory input.
+# Parameters
+## Input/output options
 
-### Optional
-- `--output` (string): The path where the results will be stored. Default is `./output`.
-- `--medaka_model` (string): The path to the Medaka model file used for polishing assemblies. Default is `r941_e81_fast_g514`.
-- `--adapter_file` (string): The path to the adapter sequences file. Default is `data/adapter.fas`.
-- `--min_contig_length` (integer): The minimum length of contigs to consider. Default is `500`.
+Define where the pipeline should find input data and save output data.
+
+| Parameter | Description | Type | Default | Required | Hidden |
+|-----------|-------------|------|---------|----------|--------|
+| `samplesheet` | Input sample sheet, as csv file | `string` | ${launchDir}/samplesheet.csv |  |  |
+| `outdir` | The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure. | `string` | ${launchDir}/output |  |  |
+
+## Other parameters
+
+| Parameter | Description | Type | Default | Required | Hidden |
+|-----------|-------------|------|---------|----------|--------|
+| `max_memory` | Maximum memory to use for each process | `string` | 16.GB |  | True |
+| `max_cpus` | Maximum number of CPUs to use for each process | `integer` | 10 |  | True |
+| `max_time` | Maximum time to use for each process | `string` | 10.h |  | True |
+| `adapter_file` | Adapter file for trimming | `string` | ${projectDir}/data/adapters.fasta |  | True |
+| `min_contig_length` | Minimum contig length to keep | `integer` | 500 |  | True |
+| `medaka_model` | Medaka model to use | `string` | r941_e81_fast_g514 |  | True |
+
 
 ## Example Command
 
-To run the pipeline with the mandatory `samplesheet` and optional `output` path, use:
+To run the pipeline with the `samplesheet` and `output` path, use:
 
 ```bash
-nextflow run main.nf --samplesheet /path/to/samplesheet --output /path/to/output
+nextflow run main.nf --samplesheet /path/to/samplesheet.csv --output /path/to/output
 ```
 
 &nbsp;
@@ -61,23 +72,21 @@ An example sample sheet has been provided in the project directory
 
 2. Run the Pipeline: Execute the Nextflow command with the appropriate arguments:
 ```bash
-nextflow run main.nf --samplesheet /data/nihr/nextflow_pipelines/test_input/samplesheet.csv -resume
+nextflow run main.nf --samplesheet test_input/samplesheet.csv -resume
 ```
 
 ## Requirements
 ### Software
-    - The pipeline is built only for Linux operating systems  (e.g. Linux, Windows with [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux))
-    - As of now the pipeline is not supported for macOS because of the issue with medaka which is incompatible with some of the macos versions and macbook models
-    - Nextflow >22
-    - Docker must be running (with 10 cores and 16GB ram allocated in the docker desktop app if using windows wsl)
+    - The pipeline is primarily built for Linux operating systems (e.g., Linux, Windows with [WSL](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux)).
+    - Currently, hybrid assembly and long-read assembly are not supported on macOS due to compatibility issues with Medaka on some macOS versions and MacBook models.
+    - Nextflow version 24 or higher is required.
+    - Docker must be running, with 10 cores and 16GB RAM allocated in Docker Desktop if using Windows WSL.
 ### Hardware 
 It is recommended to have at least 10 cores and 16GB of RAM and 50GB of free storage
 
 
 # Troubleshooting
-    - Give the absolute path of the sample sheet for example `/data/test/samplesheet.csv`
     - File Not Found Errors: Ensure that all specified file paths (samplesheet, output directory, medaka model, adapter file) are correct and accessible.
     - Permission Issues: Verify that you have the necessary permissions to read the input files and write to the output directory.
-
 
 

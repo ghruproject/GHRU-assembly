@@ -1,10 +1,9 @@
 process CHECKM_MARKERS {
+    label 'process_low'
     label 'checkm_container'
-
-    tag { sample_id }
     
     input:
-    tuple val(sample_id), val(genusNAME)
+    val(genusNAME)
 
     output:
     path(marker_file)
@@ -19,27 +18,25 @@ process CHECKM_MARKERS {
 }
 
 process CONTAMINATION_CHECKM {
-    label 'checkm_container'
+    tag { meta.sample_id }
     label 'process_medium'
+    label 'checkm_container'
 
-    tag { sample_id }
-
-    publishDir "${params.output}/checkm_summary", mode: 'copy', pattern: "*.tsv"
+    publishDir "${params.outdir}/checkm_summary", mode: 'copy', pattern: "*.tsv"
 
     input:
-    tuple val(sample_id), path(fasta)
+    tuple val(meta), path(fasta)
     path(marker_file)
-    val(type)
 
     output:
-    tuple val(sample_id), path(report)
+    tuple val(meta), path(report)
 
     script:
     fasta="${fasta}"
     marker_file="${marker_file}"
     outdir="checkm_out"
     checkm_qa_out="checkm_qa_out.tsv"
-    report="${sample_id}.${type}.tsv"
+    report="${meta.sample_id}.${meta.type}.tsv"
 
     """
     checkm analyze $marker_file -x fasta . $outdir
@@ -48,76 +45,73 @@ process CONTAMINATION_CHECKM {
     """
 }
 
-process GATHER_GUNC_DB {
-    label 'gunc_container'
+process CONFINDR_FASTQS {
+    label 'confindr_container'
+    label 'process_low'
+    tag { meta.sample_id }
+
+    publishDir "${params.outdir}/confindr_summary", mode: 'copy', pattern: "*.csv"
+
 
     input:
-    path gunc_db
-
-    output: 
-    path gunc_db, emit: path
-
-    script:
-    gunc_db="${gunc_db}"
-
-    """
-    if [ ! -f "${gunc_db}/gunc_db.dmnd" ]; then
-        mkdir new_guncDB
-        gunc download_db new_guncDB
-        new_db_file=\$(ls new_guncDB)
-        mv new_guncDB/"\$new_db_file" "$gunc_db"/gunc_db.dmnd
-    fi    
-    """
-}
-
-process CONTAMINATION_GUNC {
-    label 'gunc_container'
-    label 'process_medium'
-
-    tag { sample_id }
-
-    input:
-    tuple val(sample_id), path(fasta)
-    path(gunc_db)
-
-    output:
-    tuple val(sample_id), path(gunc_scores_file)
-
-    script:
-    fasta="${fasta}"
-    guncDB="${gunc_db}"
-    gunc_out="gunc_out"
-    gunc_scores_file="sample_id_scores_file.tsv"
-
-    """
-    mkdir $gunc_out
-    gunc run -i $fasta -r $guncDB/gunc_db.dmnd --sensitive --detailed_output --use_species_level -o $gunc_out
-    scores_file=\$(ls $gunc_out/gunc_output/)
-    mv $gunc_out/gunc_output/"\$scores_file" $gunc_scores_file
-    """
+    tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
+    path(database_directory)
+    val(type)
+    tuple val(meta_2), val(slyph_report)
     
+    output:
+    tuple val(meta), path(confindr_report)
+
+    script:
+    confindr_report="${meta.sample_id}_confindr_report.csv"
+    """
+    do_confindr.py --slyph_report $slyph_report --meta_sample_id $meta.sample_id --type $type --read_one $short_reads1 --read_two $short_reads2 --confindr_out $confindr_report --database_directory $database_directory
+    """
 }
 
 
-process COMBINE_CONTAMINATION_REPORTS{
-    label 'gunc_container'
 
-    tag { sample_id }
+process SYLPH_FASTQS {
+    label 'sylph_container'
+    label 'process_low'
+    tag { meta.sample_id }
+
+    publishDir "${params.outdir}/sylph_summary", mode: 'copy', pattern: "*.tsv"
+
 
     input:
-    tuple val(sample_id), path(checkm_qa_out)
-    tuple val(sample_id), path(gunc_scores_file)
-
+    tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
+    
     output:
-    tuple val(sample_id), path(contamination_report)
+    tuple val(meta), path(slyph_report)
 
     script:
-    gunc_merge_out="gunc_merge_out"
-    contamination_report="sample_id_contamination_report.tsv"
+    slyph_report="${meta.sample_id}_slyph_report.tsv"
+
     """
-    mkdir $gunc_merge_out
-    gunc merge_checkm --checkm_file $checkm_qa_out  --gunc_file $gunc_scores_file -o $gunc_merge_out
-    final_report=\$(ls $gunc_merge_out)
-    mv $gunc_merge_out/"\$final_report" $contamination_report
+    sylph profile /opt/sylph/gtdb-r220-c1000-dbv1.syldb -1 $short_reads1 -2 $short_reads2 > $slyph_report
+    """
+}
+
+
+process SYLPH_FASTQS_LR {
+    label 'sylph_container'
+    label 'process_low'
+    tag { meta.sample_id }
+
+    publishDir "${params.outdir}/sylph_summary", mode: 'copy', pattern: "*.tsv"
+
+
+    input:
+    tuple val(meta), path(long_reads), val(genome_size)
+    
+    output:
+    tuple val(meta), path(slyph_report)
+
+    script:
+    slyph_report="${meta.sample_id}_slyph_report.tsv"
+
+    """
+    sylph profile /opt/sylph/gtdb-r220-c1000-dbv1.syldb $long_reads  > $slyph_report
     """
 }
