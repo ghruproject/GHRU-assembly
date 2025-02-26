@@ -16,10 +16,9 @@ process ASSEMBLY_DRAGONFLYE{
     script:
     LR="$long_reads"
     fasta="${meta.sample_id}.long.fasta"
-    GSIZE=path(genome_size).text.trim()
     """
-    
-    dragonflye --gsize $GSIZE --reads $LR --cpus $task.cpus --ram $task.memory \
+    GSIZE=\$(cat $genome_size)
+    dragonflye --gsize \$GSIZE --reads $LR --cpus $task.cpus --ram $task.memory \
     --prefix $meta.sample_id --racon 1 --medaka 1 --model $medaka_model \
     --outdir "$meta.sample_id" --force --keepfiles --depth 150
     mv "$meta.sample_id"/"$meta.sample_id".fa $fasta
