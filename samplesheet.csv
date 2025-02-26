@@ -1,4 +1,0 @@
-sample_id,short_reads1,short_reads2,long_reads,genome_size
-test_1,/home/jovyan/shared-team/ghru/test_data/GCF_040556925.1_R1.fastq.gz,/home/jovyan/shared-team/ghru/test_data/GCF_040556925.1_R2.fastq.gz,/home/jovyan/shared-team/ghru/test_data/GCF_040556925.1_long.fastq.gz,0.5m
-test_2,,,/home/jovyan/shared-team/ghru/test_data/GCF_040556925.1_long.fastq.gz,0.5m
-test_3,/home/jovyan/shared-team/ghru/test_data/GCF_040556925.1_R1.fastq.gz,/home/jovyan/shared-team/ghru/test_data/GCF_040556925.1_R2.fastq.gz,,0.5m

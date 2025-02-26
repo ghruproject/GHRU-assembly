@@ -1,21 +1,24 @@
 process CALCULATE_GENOME_SIZE_LR {
     tag { meta.sample_id }    
     label 'process_medium'
-    label 'kmc_container'
+    label 'lrge_container'
 
     input:
     tuple val(meta), path(long_reads)
 
     output:
-    tuple val(meta), path(long_reads), env('genome_size')
+    tuple val(meta), path(long_reads), path(genome_size)
 
     script:
-
+    genome_size="${meta.sample_id}_genome_size.txt"
+    
     """
-    LR=$long_reads
-    GSIZE=$meta.genome_size 
-    source get_genome_size_long.sh
-    genome_size=`cat gsize.txt`
+    count=\$(zcat $long_reads | grep -c "^@")
+    if [ \$count -lt 5000 ]; then
+        lrge $long_reads -n \$count -o ${meta.sample_id}_genome_size.txt
+    else
+        lrge $long_reads -o ${meta.sample_id}_genome_size.txt
+    fi
     """
 }
 
@@ -27,7 +30,7 @@ process NANOPLOT {
     publishDir "${params.outdir}/long_read_stats", mode: 'copy', pattern: '*.html'
 
     input:
-    tuple val(meta), path(long_reads), val(genome_size)
+    tuple val(meta), path(long_reads), path(genome_size)
 
     output:
     tuple val(meta), path("*.html"), emit: html
@@ -49,10 +52,10 @@ process PORECHOP{
     label 'porechop_container'
 
     input:
-    tuple val(meta), path(long_reads), val(genome_size)
+    tuple val(meta), path(long_reads), path(genome_size)
 
     output:
-    tuple val(meta), path(preprocessed_ont), val(genome_size), emit: long_read_assembly
+    tuple val(meta), path(preprocessed_ont), path(genome_size), emit: long_read_assembly
     path(preprocessed_ont), emit: long_reads
 
     script:

@@ -9,7 +9,7 @@ process ASSEMBLY_SHOVILL {
     publishDir "${params.outdir}/assemblies", mode: 'copy', pattern: '*.short.fasta'
 
     input:
-    tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
+    tuple val(meta), path(short_reads1), path(short_reads2)
     val min_contig_length
 
     output:

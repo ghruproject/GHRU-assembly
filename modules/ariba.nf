@@ -8,7 +8,7 @@ process ARIBA_CONTAM {
 
 
     input:
-    tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
+    tuple val(meta), path(short_reads1), path(short_reads2)
     val(species)
     
     output:

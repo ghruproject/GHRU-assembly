@@ -1,33 +1,10 @@
-process CALCULATE_GENOME_SIZE_SR {
-    tag { meta.sample_id }
-    label 'process_low'
-    label 'kmc_container'
-
-    input:
-    tuple val(meta), path(short_reads1), path(short_reads2)
-
-    output:
-    tuple val(meta), path(short_reads1), path(short_reads2), env('genome_size')
-
-    script:
-    
-    """
-    read_one="${short_reads1}"
-    read_two="${short_reads2}"
-    GSIZE="${meta.genome_size}"
-    source get_genome_size.sh
-    genome_size=`cat gsize.txt`
-    """
-}
-
-
 process DETERMINE_MIN_READ_LENGTH {
     tag { meta.sample_id }
     label 'process_single'
     label 'bash_container'        
     
     input:
-    tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
+    tuple val(meta), path(short_reads1), path(short_reads2)
     
     output:
     env('min_length')
@@ -47,13 +24,13 @@ process TRIMMING{
     label 'trimmomatic_container'
 
     input:
-    tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
+    tuple val(meta), path(short_reads1), path(short_reads2)
     val(min_read_length)
     path('adapter_file.fas')
 
 
     output:
-    tuple val(meta), path(processed_one), path(processed_two), val(genome_size)
+    tuple val(meta), path(processed_one), path(processed_two)
 
     script:
     read_one="${short_reads1}"
@@ -75,7 +52,7 @@ process FASTQC{
     publishDir "${params.outdir}/post_trimming_short_read_stats", mode: 'copy'
 
     input:
-    tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
+    tuple val(meta), path(short_reads1), path(short_reads2)
 
     output:
     tuple val(meta), path("*.html"), emit: html

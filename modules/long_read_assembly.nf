@@ -6,7 +6,7 @@ process ASSEMBLY_DRAGONFLYE{
     publishDir "${params.outdir}/assemblies", mode: 'copy', pattern: '*.long.fasta'
 
     input:
-    tuple val(meta), path(long_reads), val(genome_size)
+    tuple val(meta), path(long_reads), path(genome_size)
     val(medaka_model)
 
     output:
@@ -15,9 +15,10 @@ process ASSEMBLY_DRAGONFLYE{
 
     script:
     LR="$long_reads"
-    GSIZE="$genome_size"
     fasta="${meta.sample_id}.long.fasta"
+    GSIZE=path(genome_size).text.trim()
     """
+    
     dragonflye --gsize $GSIZE --reads $LR --cpus $task.cpus --ram $task.memory \
     --prefix $meta.sample_id --racon 1 --medaka 1 --model $medaka_model \
     --outdir "$meta.sample_id" --force --keepfiles --depth 150
