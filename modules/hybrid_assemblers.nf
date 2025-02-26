@@ -6,7 +6,7 @@ process UNICYCLER{
     publishDir "${params.outdir}/assemblies", mode: 'copy', pattern: '*.hybrid.fasta'
 
     input:
-    tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
+    tuple val(meta), path(short_reads1), path(short_reads2)
     path(long_reads)
 
     output:
