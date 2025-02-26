@@ -15,21 +15,21 @@ def main(args):
 
     get_mlst(args.directory)
     create_dockerfile(args.directory, args.workdir)
-    build_dockerfile( args.workdir)
+    build_dockerfile( args.workdir, args.tag)
 
-def build_dockerfile(workdir):
+def build_dockerfile(workdir, tag):
     # Build the Dockerfile
-    command = f"docker build -t happykhan/ariba_contam:0.1.0 {workdir}"
+    command = f"docker build -t happykhan/ariba_contam:{tag} {workdir}"
     print(f"Building Docker image with command: {command}")
     result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
     print(result.stdout)
     # Tag the Docker image
-    tag_command = "docker tag happykhan/ariba_contam:0.1.0 happykhan/ariba_contam:0.1.0"
+    tag_command = f"docker tag happykhan/ariba_contam:{tag} happykhan/ariba_contam:{tag}"
     print(f"Tagging Docker image with command: {tag_command}")
     result = subprocess.run(tag_command, shell=True, capture_output=True, text=True, check=True)
     print(result.stdout)
     # Push the Docker image to the repository
-    command = "docker push happykhan/ariba_contam:0.1.0"
+    command = f"docker push happykhan/ariba_contam:{tag}"
     print(f"Pushing Docker image with command: {command}")
     result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
     # print(result.stdout)
@@ -82,5 +82,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Prepare databases for GHRU assembly.')
     parser.add_argument('--directory', type=str, help='Directory to store databases', default="Docker/ariba_contam/ariba_mlst")
     parser.add_argument('--workdir', type=str, help='Directory workdir', default="Docker/ariba_contam")
+    parser.add_argument('--tag', type=str, help='Docker tag', default="0.1.1")
     args = parser.parse_args()    
     main(args)
