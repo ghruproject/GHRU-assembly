@@ -61,7 +61,7 @@ workflow {
     }
     .set { hybSplit }
 
-    HY_ASSEMBLY (hybSplit.shortreads, hybSplit.longreads)
+   HY_ASSEMBLY (hybSplit.shortreads, hybSplit.longreads)
 
 
 }

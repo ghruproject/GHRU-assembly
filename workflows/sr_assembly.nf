@@ -1,6 +1,5 @@
 //import modules for the short read only assembly workflow
 
-include { CALCULATE_GENOME_SIZE_SR       } from '../modules/short_reads_preprocess'
 include { DETERMINE_MIN_READ_LENGTH      } from '../modules/short_reads_preprocess'
 include { TRIMMING                       } from '../modules/short_reads_preprocess'
 include { FASTQC                         } from '../modules/short_reads_preprocess'
@@ -30,14 +29,12 @@ workflow SR_ASSEMBLY{
 
     //main workflow for short read assembly
     main:
-    //calculate genomesize for which it is not available and create a channel for reads with genome size
-    reads_with_genome_size = CALCULATE_GENOME_SIZE_SR(srt_reads)
     //determine min read length required for trimming
-    DETERMINE_MIN_READ_LENGTH(reads_with_genome_size)
+    DETERMINE_MIN_READ_LENGTH(srt_reads)
 
     //qc trimming using trimmomatic
     def adapter_yes_file = resolveRelativePath(projectDir, params.adapter_file)
-    TRIMMING (reads_with_genome_size, DETERMINE_MIN_READ_LENGTH.out, adapter_yes_file)
+    TRIMMING (srt_reads, DETERMINE_MIN_READ_LENGTH.out, adapter_yes_file)
 
     //create channel called processed short reads from trimming out
     processed_short_reads= TRIMMING.out
