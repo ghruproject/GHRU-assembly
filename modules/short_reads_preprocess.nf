@@ -13,8 +13,9 @@ process DETERMINE_MIN_READ_LENGTH {
 
     read_one="${short_reads1}"
     read_two="${short_reads2}"
+    min_length="${meta.sample_id}_min_length.txt"
     """
-    gzip -cd ${read_one} | head -n 400000 | printf "%.0f" \$(awk 'NR%4==2{sum+=length(\$0)}END{print sum/(NR/4)/3}') > min_length.txt
+    gzip -cd ${read_one} | head -n 400000 | printf "%.0f" \$(awk 'NR%4==2{sum+=length(\$0)}END{print sum/(NR/4)/3}') > $min_length
     """
 }
 
@@ -25,8 +26,8 @@ process TRIMMING{
 
     input:
     tuple val(meta), path(short_reads1), path(short_reads2)
-    val(min_read_length)
-    path('adapter_file.fas')
+    path(min_read_length)
+    path(adapter_file)
 
 
     output:
@@ -39,7 +40,8 @@ process TRIMMING{
     processed_two="processed-${meta.sample_id}_2.fastq.gz"
 
     """
-    trimmomatic PE -threads $task.cpus -phred33 $read_one $read_two $processed_one /dev/null $processed_two /dev/null ILLUMINACLIP:adapter_file.fas:2:30:10 SLIDINGWINDOW:4:20 LEADING:25 TRAILING:25 MINLEN:${min_read_length}  
+    MINSIZE=\$(cat $min_read_length)
+    trimmomatic PE -threads $task.cpus -phred33 $read_one $read_two $processed_one /dev/null $processed_two /dev/null ILLUMINACLIP:$adapter_file:2:30:10 SLIDINGWINDOW:4:20 LEADING:25 TRAILING:25 MINLEN:\$MINSIZE  
     """
 }
 
