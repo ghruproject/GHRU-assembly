@@ -7,14 +7,14 @@ process DETERMINE_MIN_READ_LENGTH {
     tuple val(meta), path(short_reads1), path(short_reads2)
     
     output:
-    env('min_length')
+    path(min_length)
 
     script:
 
     read_one="${short_reads1}"
     read_two="${short_reads2}"
     """
-    min_length=`gzip -cd ${read_one} | head -n 400000 | printf "%.0f" \$(awk 'NR%4==2{sum+=length(\$0)}END{print sum/(NR/4)/3}')`
+    gzip -cd ${read_one} | head -n 400000 | printf "%.0f" \$(awk 'NR%4==2{sum+=length(\$0)}END{print sum/(NR/4)/3}') > min_length.txt
     """
 }
 
