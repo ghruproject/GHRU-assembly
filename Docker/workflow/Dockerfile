@@ -22,11 +22,10 @@ RUN curl -s https://get.nextflow.io | bash && \
 RUN nextflow -version
 
 # Get ghru assembly pipeline 
+WORKDIR /tmp
 RUN git clone https://github.com/cgps-discovery/GHRU-assembly.git 
 RUN nextflow plugin install nf-schema@2.2.0
-
-# Change working directory
-WORKDIR /GHRU-assembly
+WORKDIR /tmp/GHRU-assembly
 
 # Set the entrypoint
 # ENTRYPOINT ["nextflow"]
