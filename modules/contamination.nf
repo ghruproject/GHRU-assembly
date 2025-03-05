@@ -1,21 +1,21 @@
-process CHECKM_MARKERS {
-    label 'process_low'
-    label 'checkm_container'
+// process CHECKM_MARKERS {
+//     label 'process_low'
+//     label 'checkm_container'
     
-    input:
-    val(genusNAME)
+//     input:
+//     val(genusNAME)
 
-    output:
-    path(marker_file)
+//     output:
+//     path(marker_file)
 
-    script:
-    genera="${genusNAME}"
-    marker_file="checkm_markerfile"
+//     script:
+//     genera="${genusNAME}"
+//     marker_file="checkm_markerfile"
 
-    """    
-    checkm taxon_set species "$genera" $marker_file
-    """
-}
+//     """    
+//     checkm taxon_set species "$genera" $marker_file
+//     """
+// }
 
 process CONTAMINATION_CHECKM {
     tag { meta.sample_id }
@@ -26,21 +26,18 @@ process CONTAMINATION_CHECKM {
 
     input:
     tuple val(meta), path(fasta)
-    path(marker_file)
 
     output:
     tuple val(meta), path(report)
 
     script:
     fasta="${fasta}"
-    marker_file="${marker_file}"
     outdir="checkm_out"
     checkm_qa_out="checkm_qa_out.tsv"
     report="${meta.sample_id}.${meta.type}.tsv"
 
     """
-    checkm analyze $marker_file -x fasta . $outdir
-    checkm qa -f $checkm_qa_out -o 2 --tab_table $marker_file $outdir
+    checkm lineage_wf  -x fasta -f $checkm_qa_out -t $task.cpus --tab_table . $outdir
     mv ${checkm_qa_out} ${report}
     """
 }

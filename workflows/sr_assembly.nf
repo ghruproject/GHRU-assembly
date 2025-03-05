@@ -6,7 +6,6 @@ include { FASTQC                         } from '../modules/short_reads_preproce
 include { ASSEMBLY_SHOVILL               } from '../modules/short_read_assembly'
 include { QUAST                          } from '../modules/quast'
 include { SPECIATION                     } from '../modules/speciation' 
-include { CHECKM_MARKERS                 } from '../modules/contamination'
 include { CONTAMINATION_CHECKM           } from '../modules/contamination'
 include { CALCULATEBASES_SR              } from '../modules/calculate_bases'
 include { ASSEMBLY_DEPTH                 } from '../modules/assembly_depth'
@@ -58,8 +57,7 @@ workflow SR_ASSEMBLY{
     SPECIATION.out.species_name.map{ file -> file[1].text.trim() } .set { species }
     ARIBA_CONTAM(processed_short_reads, species)
     //contamination check checkm
-    CHECKM_MARKERS(species)
-    CONTAMINATION_CHECKM(ASSEMBLY_SHOVILL.out, CHECKM_MARKERS.out)
+    CONTAMINATION_CHECKM(ASSEMBLY_SHOVILL.out)
 
     //calculate bases
     CALCULATEBASES_SR(processed_short_reads)
