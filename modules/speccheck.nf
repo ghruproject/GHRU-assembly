@@ -6,7 +6,7 @@ process SPECCHECK{
     
     input:
     tuple val(meta), path(quast_report, stageAs: 'quast.report.tsv')
-    tuple val(meta_1), val(species_name)
+    val(species_name)
     tuple val(meta_2), path(species_report, stageAs: 'species.tsv')
     tuple val(meta_3), path(contamination_report, stageAs: 'contamination.tsv')
     tuple val(meta_4), path(depth_report, stageAs: 'depth.tsv') 

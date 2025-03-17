@@ -5,7 +5,7 @@ process ASSEMBLY_DEPTH {
 
     input:
     tuple val(meta), val(assembly_length)
-    tuple val(meta_again), val(total_bases)
+    tuple val(meta_again), path(total_bases)
     val(read_type)
 
     output:
@@ -14,7 +14,8 @@ process ASSEMBLY_DEPTH {
     script:
     depth_report="${meta.sample_id}.${meta.type}${read_type}.depth.tsv"
     """
-    depth=\$(echo "scale=2; ${total_bases} / ${assembly_length}" | bc)
+    TOTAL_BASES=\$(cat $total_bases)
+    depth=\$(echo "scale=2; \$TOTAL_BASES / ${assembly_length}" | bc)
 
     #Write header and values to the TSV file
     echo -e "Sample_id\tRead_type\tDepth" > ${depth_report}
