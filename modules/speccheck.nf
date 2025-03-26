@@ -66,7 +66,7 @@ process SPECCHECK_SUMMARY{
 
     script:
     """
-    python /app/speccheck.py summary ./  --plot --templates /app/templates/report.html 
+    python /app/speccheck.py summary ./  --templates /app/templates/report.html 
     mv yes.html qc_report.${type}.html
     mv qc_report.csv qc_report.${type}.csv
     """   
