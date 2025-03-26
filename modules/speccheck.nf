@@ -62,7 +62,6 @@ process SPECCHECK_SUMMARY{
 
     output:
     path("qc_report.${type}.csv"), emit: report
-    path("qc_report.${type}.html"), emit: html
 
     script:
     """
