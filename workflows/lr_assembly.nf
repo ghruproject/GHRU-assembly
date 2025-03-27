@@ -5,7 +5,6 @@ include { PORECHOP                       }  from '../modules/long_reads_preproce
 include { ASSEMBLY_DRAGONFLYE            }  from '../modules/long_read_assembly'
 include { QUAST                          }  from '../modules/quast'
 include { SPECIATION                     }  from '../modules/speciation' 
-include { CHECKM_MARKERS                 }  from '../modules/contamination'
 include { CONTAMINATION_CHECKM           }  from '../modules/contamination'
 include { CALCULATEBASES_LR              }  from '../modules/calculate_bases'
 include { ASSEMBLY_DEPTH                 }  from '../modules/assembly_depth'
@@ -52,8 +51,7 @@ workflow LR_ASSEMBLY{
     SPECIATION.out.species_name.map{ file -> file[1].text.trim() } .set { species }
 
    //contamination check checkm
-    CHECKM_MARKERS(species)
-    CONTAMINATION_CHECKM(ASSEMBLY_DRAGONFLYE.out, CHECKM_MARKERS.out)
+    CONTAMINATION_CHECKM(ASSEMBLY_DRAGONFLYE.out)
     
     //calculate bases
     CALCULATEBASES_LR(preprocessed_long_reads)

@@ -8,7 +8,6 @@ include { PORECHOP                            } from '../modules/long_reads_prep
 include { UNICYCLER                           } from '../modules/hybrid_assemblers'
 include { QUAST                               } from '../modules/quast' 
 include { SPECIATION                          } from '../modules/speciation' 
-include { CHECKM_MARKERS                      } from '../modules/contamination'
 include { CONTAMINATION_CHECKM                } from '../modules/contamination'
 include { CALCULATEBASES_SR                   } from '../modules/calculate_bases'
 include { CALCULATEBASES_LR                   } from '../modules/calculate_bases'
@@ -73,8 +72,7 @@ workflow HY_ASSEMBLY{
     ARIBA_CONTAM(processed_short_reads, species)
 
     //contamination check checkm
-    CHECKM_MARKERS(species)
-    CONTAMINATION_CHECKM(UNICYCLER.out, CHECKM_MARKERS.out)
+    CONTAMINATION_CHECKM(UNICYCLER.out)
     
     //calculate bases
     CALCULATEBASES_SR(processed_short_reads)
