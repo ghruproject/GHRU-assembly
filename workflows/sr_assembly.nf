@@ -11,7 +11,6 @@ include { CONTAMINATION_CHECKM           } from '../modules/contamination'
 include { CALCULATEBASES_SR              } from '../modules/calculate_bases'
 include { ASSEMBLY_DEPTH                 } from '../modules/assembly_depth'
 include { COMBINE_REPORTS                } from '../modules/combine_reports'
-include { resolveRelativePath            } from '../modules/messages'
 include { SPECCHECK                      } from '../modules/speccheck'
 include { SPECCHECK_SUMMARY              } from '../modules/speccheck'
 include { CONFINDR_FASTQS                } from '../modules/contamination'
@@ -33,8 +32,8 @@ workflow SR_ASSEMBLY{
     DETERMINE_MIN_READ_LENGTH(srt_reads)
 
     //qc trimming using trimmomatic
-    def adapter_yes_file = resolveRelativePath(projectDir, params.adapter_file)
-    TRIMMING (srt_reads, DETERMINE_MIN_READ_LENGTH.out, adapter_yes_file)
+  //   def adapter_yes_file = resolveRelativePath(projectDir, params.adapter_file)
+    TRIMMING (srt_reads, DETERMINE_MIN_READ_LENGTH.out,  params.adapter_file)
 
     //create channel called processed short reads from trimming out
     processed_short_reads= TRIMMING.out

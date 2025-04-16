@@ -41,7 +41,9 @@ process TRIMMING{
 
     """
     MINSIZE=\$(cat $min_read_length)
-    trimmomatic PE -threads $task.cpus -phred33 $read_one $read_two $processed_one /dev/null $processed_two /dev/null ILLUMINACLIP:$adapter_file:2:30:10 SLIDINGWINDOW:4:20 LEADING:25 TRAILING:25 MINLEN:\$MINSIZE  
+    echo "$adapter_file"
+    cp $adapter_file adapter_file.fas
+    trimmomatic PE -threads $task.cpus -phred33 $read_one $read_two $processed_one /dev/null $processed_two /dev/null ILLUMINACLIP:adapter_file.fas:2:30:10 SLIDINGWINDOW:4:20 LEADING:25 TRAILING:25 MINLEN:\$MINSIZE  
     """
 }
 
