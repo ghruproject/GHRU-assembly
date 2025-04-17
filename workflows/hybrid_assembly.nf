@@ -1,5 +1,4 @@
 //import modules
-include { DETERMINE_MIN_READ_LENGTH           } from '../modules/short_reads_preprocess'
 include { TRIMMING                            } from '../modules/short_reads_preprocess'
 include { FASTQC                              } from '../modules/short_reads_preprocess'
 include { CALCULATE_GENOME_SIZE_LR            } from '../modules/long_reads_preprocess'
@@ -32,11 +31,8 @@ workflow HY_ASSEMBLY{
     //main workflow for hybrid assembly
     main: 
 
-    //determine min read length required for trimming
-    DETERMINE_MIN_READ_LENGTH(hyb_short)
-
     //qc trimming using trimmomatic
-    TRIMMING (hyb_short, DETERMINE_MIN_READ_LENGTH.out, params.adapter_file)
+    TRIMMING (hyb_short, params.adapter_file)
 
     //create channel called processed short reads from trimming out
     processed_short_reads= TRIMMING.out
@@ -87,10 +83,29 @@ workflow HY_ASSEMBLY{
     //combine SR and LR depth reports
     COMBINE_DEPTH_REPORTS(ASSEMBLY_DEPTH_SR.out, ASSEMBLY_DEPTH_LR.out)
  
-    //Consolidate all reports
-    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.report)
+    //join all reports by meta
+    combined_reports = QUAST.out.report
+        .join(SPECIATION.out.species_report, failOnDuplicate: true)
+        .join(CONTAMINATION_CHECKM.out, failOnDuplicate: true)
+        .join(COMBINE_DEPTH_REPORTS.out, failOnDuplicate: true)
+        .join(SYLPH_FASTQS.out, failOnDuplicate: true)
+        .join(ARIBA_CONTAM.out.report, failOnDuplicate: true)
 
-    SPECCHECK(QUAST.out.orireport, species, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, COMBINE_DEPTH_REPORTS.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.details)
+    //Consolidate all reports
+    COMBINE_REPORTS(combined_reports)
+
+
+    //combine files for speccheck
+    combined_reports_speccheck = QUAST.out.orireport
+        .join(species, failOnDuplicate: true)
+        .join(SPECIATION.out.species_report, failOnDuplicate: true)
+        .join(CONTAMINATION_CHECKM.out, failOnDuplicate: true)
+        .join(COMBINE_DEPTH_REPORTS.out, failOnDuplicate: true)
+        .join(SYLPH_FASTQS.out, failOnDuplicate: true)
+        .join(ARIBA_CONTAM.out.details, failOnDuplicate: true) 
+
+    //run speccheck    
+    SPECCHECK(combined_reports_speccheck)
 
 
     // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY

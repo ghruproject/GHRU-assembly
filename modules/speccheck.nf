@@ -2,16 +2,11 @@ process SPECCHECK{
     tag { meta.sample_id }
     label 'process_single'
     label 'speccheck_container'
+
     publishDir "${params.outdir}/speccheck", mode: 'copy'    
     
     input:
-    tuple val(meta), path(quast_report, stageAs: 'quast.report.tsv')
-    val(species_name)
-    tuple val(meta_2), path(species_report, stageAs: 'species.tsv')
-    tuple val(meta_3), path(contamination_report, stageAs: 'contamination.tsv')
-    tuple val(meta_4), path(depth_report, stageAs: 'depth.tsv') 
-    tuple val(meta_5), path(sylph_report, stageAs: 'sylph.tsv') 
-    tuple val(meta_6), path(ariba_report, stageAs: 'ariba.tsv') 
+    tuple val(meta), path(quast_report, stageAs: 'quast.report.tsv'), val(species_name), path(species_report, stageAs: 'species.tsv'), path(contamination_report, stageAs: 'contamination.tsv'), path(depth_report, stageAs: 'depth.tsv'), path(sylph_report, stageAs: 'sylph.tsv'), path(ariba_report, stageAs: 'ariba.tsv') 
 
 
     output:
@@ -31,12 +26,7 @@ process SPECCHECK_LR{
     publishDir "${params.outdir}/speccheck", mode: 'copy'    
     
     input:
-    tuple val(meta), path(quast_report, stageAs: 'quast.report.tsv')
-    tuple val(meta_1), val(species_name)
-    tuple val(meta_2), path(species_report, stageAs: 'species.tsv')
-    tuple val(meta_3), path(contamination_report, stageAs: 'contamination.tsv')
-    tuple val(meta_4), path(depth_report, stageAs: 'depth.tsv') 
-    tuple val(meta_5), path(sylph_report, stageAs: 'sylph.tsv') 
+    tuple val(meta), path(quast_report, stageAs: 'quast.report.tsv'), val(species_name), path(species_report, stageAs: 'species.tsv'), path(contamination_report, stageAs: 'contamination.tsv'), path(depth_report, stageAs: 'depth.tsv'), path(sylph_report, stageAs: 'sylph.tsv') 
 
     output:
     tuple val(meta), path("${meta.sample_id}.${meta.type}.csv"), emit: report

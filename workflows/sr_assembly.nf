@@ -1,6 +1,5 @@
 //import modules for the short read only assembly workflow
 
-include { DETERMINE_MIN_READ_LENGTH      } from '../modules/short_reads_preprocess'
 include { TRIMMING                       } from '../modules/short_reads_preprocess'
 include { FASTQC                         } from '../modules/short_reads_preprocess'
 include { ASSEMBLY_SHOVILL               } from '../modules/short_read_assembly'
@@ -28,11 +27,11 @@ workflow SR_ASSEMBLY{
     //main workflow for short read assembly
     main:
     //determine min read length required for trimming
-    DETERMINE_MIN_READ_LENGTH(srt_reads)
+    //DETERMINE_MIN_READ_LENGTH(srt_reads)
 
     //qc trimming using trimmomatic
   //   def adapter_yes_file = resolveRelativePath(projectDir, params.adapter_file)
-    TRIMMING (srt_reads, DETERMINE_MIN_READ_LENGTH.out,  params.adapter_file)
+    TRIMMING (srt_reads, params.adapter_file)
 
     //create channel called processed short reads from trimming out
     processed_short_reads= TRIMMING.out
@@ -64,10 +63,29 @@ workflow SR_ASSEMBLY{
     //calculate depth of short reads based on assembly length and short read bases
     ASSEMBLY_DEPTH(QUAST.out.assembly_length, CALCULATEBASES_SR.out, "short_reads")
 
-    //Consolidate all reports
-    COMBINE_REPORTS(QUAST.out.report, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.report)
+    //join all reports by meta
+    combined_reports = QUAST.out.report
+        .join(SPECIATION.out.species_report, failOnDuplicate: true)
+        .join(CONTAMINATION_CHECKM.out, failOnDuplicate: true)
+        .join(ASSEMBLY_DEPTH.out, failOnDuplicate: true)
+        .join(SYLPH_FASTQS.out, failOnDuplicate: true)
+        .join(ARIBA_CONTAM.out.report, failOnDuplicate: true)
 
-    SPECCHECK(QUAST.out.orireport, species, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, SYLPH_FASTQS.out, ARIBA_CONTAM.out.details)
+    //combine all reports
+    COMBINE_REPORTS(combined_reports)
+
+    //combine files for speccheck
+    combined_reports_speccheck = QUAST.out.orireport
+        .join(species, failOnDuplicate: true)
+        .join(SPECIATION.out.species_report, failOnDuplicate: true)
+        .join(CONTAMINATION_CHECKM.out, failOnDuplicate: true)
+        .join(ASSEMBLY_DEPTH.out, failOnDuplicate: true)
+        .join(SYLPH_FASTQS.out, failOnDuplicate: true)
+        .join(ARIBA_CONTAM.out.details, failOnDuplicate: true)    
+
+    //combined_reports_speccheck.veiw()    
+    //run speccheck
+    SPECCHECK(combined_reports_speccheck)
 
     // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
     sum = SPECCHECK.out.report.map({ meta, filepath -> filepath}).collect()

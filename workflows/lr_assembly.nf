@@ -60,9 +60,24 @@ workflow LR_ASSEMBLY{
     ASSEMBLY_DEPTH(QUAST.out.assembly_length,CALCULATEBASES_LR.out, "long_reads")
 
     //Consolidate all reports
-    COMBINE_REPORTS_LR(QUAST.out.report, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, SYLPH_FASTQS_LR.out)
+    //join all reports by meta
+    combined_reports = QUAST.out.report
+        .join(SPECIATION.out.species_report, failOnDuplicate: true)
+        .join(CONTAMINATION_CHECKM.out, failOnDuplicate: true)
+        .join(ASSEMBLY_DEPTH.out, failOnDuplicate: true)
+        .join(SYLPH_FASTQS_LR.out, failOnDuplicate: true)
+    
+    COMBINE_REPORTS_LR(combined_reports)
 
-    SPECCHECK_LR(QUAST.out.orireport, species, SPECIATION.out.species_report, CONTAMINATION_CHECKM.out, ASSEMBLY_DEPTH.out, SYLPH_FASTQS_LR.out)
+    //combine files for speccheck
+    combined_reports_speccheck = QUAST.out.orireport
+        .join(species, failOnDuplicate: true)
+        .join(SPECIATION.out.species_report, failOnDuplicate: true)
+        .join(CONTAMINATION_CHECKM.out, failOnDuplicate: true)
+        .join(ASSEMBLY_DEPTH.out, failOnDuplicate: true)
+        .join(SYLPH_FASTQS_LR.out, failOnDuplicate: true)
+
+    SPECCHECK_LR(combined_reports_speccheck)
 
     // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
     sum = SPECCHECK_LR.out.report.map({ meta, filepath -> filepath}).collect()
