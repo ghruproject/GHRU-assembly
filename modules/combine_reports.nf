@@ -3,15 +3,11 @@ process COMBINE_REPORTS{
     label 'process_single'
     label 'bash_container'
     
-    publishDir "${params.outdir}/summary", mode: 'copy', pattern: "*.tsv"
+    publishDir "${params.outdir}/tools_summary", mode: 'copy', pattern: "*.tsv"
 
     input:
-    tuple val(meta), path(quast_report, stageAs: 'quast.tsv')
-    tuple val(meta_2), path(species_report, stageAs: 'species.tsv')
-    tuple val(meta_3), path(contamination_report, stageAs: 'contamination.tsv')
-    tuple val(meta_4), path(depth_report, stageAs: 'depth.tsv') 
-    tuple val(meta_5), path(sylph_report, stageAs: 'sylph.tsv') 
-    tuple val(meta_6), path(ariba_report, stageAs: 'ariba.tsv') 
+    tuple val(meta), path(quast_report, stageAs: 'quast.tsv'), path(species_report, stageAs: 'species.tsv'), path(contamination_report, stageAs: 'contamination.tsv'), path(depth_report, stageAs: 'depth.tsv'),  path(sylph_report, stageAs: 'sylph.tsv'), path(ariba_report, stageAs: 'ariba.tsv')
+     
 
     output:
     tuple val(meta.sample_id), path("${meta.sample_id}.${meta.type}.tsv"), emit: report
@@ -58,14 +54,10 @@ process COMBINE_REPORTS_LR{
     label 'process_single'
     label 'bash_container'
     
-    publishDir "${params.outdir}/summary", mode: 'copy', pattern: "*.tsv"
+    publishDir "${params.outdir}/tools_summary", mode: 'copy', pattern: "*.tsv"
 
     input:
-    tuple val(meta), path(quast_report, stageAs: 'quast.tsv')
-    tuple val(meta_2), path(species_report, stageAs: 'species.tsv')
-    tuple val(meta_3), path(contamination_report, stageAs: 'contamination.tsv')
-    tuple val(meta_4), path(depth_report, stageAs: 'depth.tsv') 
-    tuple val(meta_5), path(sylph_report, stageAs: 'sylph.tsv') 
+    tuple val(meta), path(quast_report, stageAs: 'quast.tsv'), path(species_report, stageAs: 'species.tsv'), path(contamination_report, stageAs: 'contamination.tsv'), path(depth_report, stageAs: 'depth.tsv'), path(sylph_report, stageAs: 'sylph.tsv') 
 
     output:
     tuple val(meta.sample_id), path("${meta.sample_id}.${meta.type}.tsv"), emit: report

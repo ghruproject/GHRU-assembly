@@ -1,22 +1,3 @@
-// process CHECKM_MARKERS {
-//     label 'process_low'
-//     label 'checkm_container'
-    
-//     input:
-//     val(genusNAME)
-
-//     output:
-//     path(marker_file)
-
-//     script:
-//     genera="${genusNAME}"
-//     marker_file="checkm_markerfile"
-
-//     """    
-//     checkm taxon_set species "$genera" $marker_file
-//     """
-// }
-
 process CONTAMINATION_CHECKM {
     tag { meta.sample_id }
     label 'process_high'
