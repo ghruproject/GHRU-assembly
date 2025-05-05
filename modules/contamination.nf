@@ -16,9 +16,9 @@ process CONTAMINATION_CHECKM {
     fasta="${fasta}"
     outdir="checkm_out"
     report="${meta.sample_id}.${meta.type}.tsv"
-
+// fix the cpus constant to
     """
-    checkm2 predict -i . -o ${outdir} -x fasta --force -t $task.cpus
+    checkm2 predict -i . -o ${outdir} -x fasta --force -t 8
     mv ${outdir}/quality_report.tsv ${report}
     """
 }
