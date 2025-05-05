@@ -1,6 +1,7 @@
 process CONTAMINATION_CHECKM {
     tag { meta.sample_id }
-    label 'process_high'
+    // label 'process_high'
+    label 'process_medium'
     label 'process_high_memory'
     label 'checkm_container'
 
@@ -16,9 +17,9 @@ process CONTAMINATION_CHECKM {
     fasta="${fasta}"
     outdir="checkm_out"
     report="${meta.sample_id}.${meta.type}.tsv"
-// fix the cpus constant to
+    
     """
-    checkm2 predict -i . -o ${outdir} -x fasta --force -t 8
+    checkm2 predict -i . -o ${outdir} -x fasta --force -t $task.cpus 
     mv ${outdir}/quality_report.tsv ${report}
     """
 }
