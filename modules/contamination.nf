@@ -1,7 +1,8 @@
 process CONTAMINATION_CHECKM {
     tag { meta.sample_id }
-    label 'process_high'
-    label 'process_high_memory'
+    // label 'process_high'
+    label 'process_medium'
+    // label 'process_high_memory'
     label 'checkm_container'
 
     publishDir "${params.outdir}/checkm_summary", mode: 'copy', pattern: "*.tsv"
@@ -18,7 +19,7 @@ process CONTAMINATION_CHECKM {
     report="${meta.sample_id}.${meta.type}.tsv"
 
     """
-    checkm2 predict -i . -o ${outdir} -x fasta --force -t $task.cpus
+    checkm2 predict -i . -o ${outdir} -x fasta --force -t $task.cpus 
     mv ${outdir}/quality_report.tsv ${report}
     """
 }
