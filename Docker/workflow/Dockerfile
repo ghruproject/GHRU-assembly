@@ -6,7 +6,7 @@ ENV NEXTFLOW_VERSION=24.10.3
 
 # Install dependencies
 RUN apt-get update && \
-    apt-get install -y openjdk-11-jre curl git apt-transport-https ca-certificates gnupg2 software-properties-common && \
+    apt-get install -y openjdk-17-jdk curl git apt-transport-https ca-certificates gnupg2 software-properties-common && \
     apt-get clean
 # Install Docker
 RUN apt-get update && \
@@ -14,7 +14,7 @@ RUN apt-get update && \
     apt-get clean
 
 # Install Nextflow
-RUN curl -s https://get.nextflow.io | bash && \
+RUN curl -sL https://github.com/nextflow-io/nextflow/releases/download/v${NEXTFLOW_VERSION}/nextflow -o nextflow && \
     mv nextflow /usr/local/bin/ && \
     chmod +x /usr/local/bin/nextflow
 
