@@ -1,0 +1,5 @@
+sample_id,short_reads1,short_reads2,long_reads,genome_size
+test_sample1,/data/test_data/GCA_000292405.1_R1.fastq.gz,/data/test_data/GCA_000292405.1_R2.fastq.gz,,0.5m
+test_sample2,,,/data/test_data/long.fastq.gz,0.5m
+test_sample3,/data/test_data/GCA_000292405.1_R1.fastq.gz,/data/test_data/GCA_000292405.1_R2.fastq.gz,/data/test_data/long.fastq.gz,0.5m
+test_sample4,/data/test_data/GCA_000292405.1_R1.fastq.gz,/data/test_data/GCA_000292405.1_R2.fastq.gz,,
