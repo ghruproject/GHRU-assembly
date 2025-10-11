@@ -18,7 +18,6 @@ include { SPECCHECK                           } from '../modules/speccheck'
 include { SPECCHECK_SUMMARY                   } from '../modules/speccheck'
 include { CONFINDR_FASTQS                     } from '../modules/contamination'
 include { SYLPH_FASTQS                        } from '../modules/contamination'
-include { ARIBA_CONTAM                        } from '../modules/ariba'
 
 workflow HY_ASSEMBLY{
 
@@ -40,11 +39,12 @@ workflow HY_ASSEMBLY{
     //do fastqc for the trimmed reads
     FASTQC(processed_short_reads)
     
+    //check inter and intra species contamination using sylph
     SYLPH_FASTQS(processed_short_reads)
-    // CONFINDR_FASTQS(processed_short_reads, params.database_directory, "Illumina", SYLPH_FASTQS.out)
 
-
+    //calculate genome size for long reads if not available
     long_reads_with_genome_size = CALCULATE_GENOME_SIZE_LR(hyb_long)
+    
     //qc of long reads using nanoplot
     NANOPLOT(long_reads_with_genome_size)
 
@@ -62,8 +62,7 @@ workflow HY_ASSEMBLY{
 
     //speciate with speciator
     SPECIATION(UNICYCLER.out)
-    SPECIATION.out.species_name.map{ file -> file[1].text.trim() } .set { species }    
-    ARIBA_CONTAM(processed_short_reads, species)
+    SPECIATION.out.species_name.map { meta, file -> tuple(meta, file.text.trim()) }.set { species }    
 
     //contamination check checkm
     CONTAMINATION_CHECKM(UNICYCLER.out)
@@ -82,17 +81,6 @@ workflow HY_ASSEMBLY{
 
     //combine SR and LR depth reports
     COMBINE_DEPTH_REPORTS(ASSEMBLY_DEPTH_SR.out, ASSEMBLY_DEPTH_LR.out)
- 
-    //join all reports by meta
-    combined_reports = QUAST.out.report
-        .join(SPECIATION.out.species_report, failOnDuplicate: true)
-        .join(CONTAMINATION_CHECKM.out, failOnDuplicate: true)
-        .join(COMBINE_DEPTH_REPORTS.out, failOnDuplicate: true)
-        .join(SYLPH_FASTQS.out, failOnDuplicate: true)
-        .join(ARIBA_CONTAM.out.report, failOnDuplicate: true)
-
-    //Consolidate all reports
-    COMBINE_REPORTS(combined_reports)
 
 
     //combine files for speccheck
@@ -102,11 +90,9 @@ workflow HY_ASSEMBLY{
         .join(CONTAMINATION_CHECKM.out, failOnDuplicate: true)
         .join(COMBINE_DEPTH_REPORTS.out, failOnDuplicate: true)
         .join(SYLPH_FASTQS.out, failOnDuplicate: true)
-        .join(ARIBA_CONTAM.out.details, failOnDuplicate: true) 
 
     //run speccheck    
     SPECCHECK(combined_reports_speccheck)
-
 
     // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
     sum = SPECCHECK.out.report.map({ meta, filepath -> filepath}).collect()

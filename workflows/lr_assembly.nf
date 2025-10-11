@@ -38,8 +38,6 @@ workflow LR_ASSEMBLY{
     preprocessed_long_reads=PORECHOP.out.long_read_assembly
     SYLPH_FASTQS_LR(preprocessed_long_reads)
 
-    // CONFINDR_FASTQS(preprocessed_long_reads, "Nanopore", SYLPH_FASTQS.out)
-
     //do long read assembly with dragonflye
     ASSEMBLY_DRAGONFLYE(preprocessed_long_reads, params.medaka_model)
 
@@ -48,7 +46,7 @@ workflow LR_ASSEMBLY{
 
     //speciate with speciator
     SPECIATION(ASSEMBLY_DRAGONFLYE.out)
-    SPECIATION.out.species_name.map{ file -> file[1].text.trim() } .set { species }
+    SPECIATION.out.species_name.map { meta, file -> tuple(meta, file.text.trim()) }.set { species }
 
    //contamination check checkm
     CONTAMINATION_CHECKM(ASSEMBLY_DRAGONFLYE.out)
@@ -59,15 +57,6 @@ workflow LR_ASSEMBLY{
     //calculate long read depth based on LR assembly length and LR bases
     ASSEMBLY_DEPTH(QUAST.out.assembly_length,CALCULATEBASES_LR.out, "long_reads")
 
-    //Consolidate all reports
-    //join all reports by meta
-    combined_reports = QUAST.out.report
-        .join(SPECIATION.out.species_report, failOnDuplicate: true)
-        .join(CONTAMINATION_CHECKM.out, failOnDuplicate: true)
-        .join(ASSEMBLY_DEPTH.out, failOnDuplicate: true)
-        .join(SYLPH_FASTQS_LR.out, failOnDuplicate: true)
-    
-    COMBINE_REPORTS_LR(combined_reports)
 
     //combine files for speccheck
     combined_reports_speccheck = QUAST.out.orireport
@@ -77,6 +66,7 @@ workflow LR_ASSEMBLY{
         .join(ASSEMBLY_DEPTH.out, failOnDuplicate: true)
         .join(SYLPH_FASTQS_LR.out, failOnDuplicate: true)
 
+    //give combined reports to speccheck
     SPECCHECK_LR(combined_reports_speccheck)
 
     // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
