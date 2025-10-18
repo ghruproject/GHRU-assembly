@@ -34,15 +34,18 @@ process COMBINE_DEPTH_REPORTS {
     tuple val(meta_again), path(lr_depth_reports)
 
     output:
-    tuple val(meta), path ("combined_depth_report.tsv")
+    tuple val(meta), path("${meta.sample_id}.hybrid.depth.tsv"), emit: combined_report
 
     script:
+    depth_report="${meta.sample_id}.hybrid.depth.tsv"
     """
     # Create header for combined report
-    echo -e "Sample_id\tShort_read_Depth\tLong_read_Depth" > combined_depth_report.tsv
+    echo -e "Sample_id\tRead_type\tDepth" > ${depth_report}
 
-    # Read SR and LR depths and combine into a single line per sample
-    paste <(cut -f1,3 ${sr_depth_reports} | tail -n +2) \
-          <(cut -f3 ${lr_depth_reports} | tail -n +2) >> combined_depth_report.tsv
+    # Add short-read depth
+    awk 'NR>1 {print \$1"\\tShort\\t"\$3}' ${sr_depth_reports} >> ${depth_report}
+
+    # Add long-read depth
+    awk 'NR>1 {print \$1"\\tLong\\t"\$3}' ${lr_depth_reports} >> ${depth_report}
     """
 }
