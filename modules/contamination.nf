@@ -24,31 +24,6 @@ process CONTAMINATION_CHECKM {
     """
 }
 
-process CONFINDR_FASTQS {
-    label 'confindr_container'
-    label 'process_low'
-    tag { meta.sample_id }
-
-    publishDir "${params.outdir}/confindr_summary", mode: 'copy', pattern: "*.csv"
-
-
-    input:
-    tuple val(meta), path(short_reads1), path(short_reads2), val(genome_size)
-    path(database_directory)
-    val(type)
-    tuple val(meta_2), val(slyph_report)
-    
-    output:
-    tuple val(meta), path(confindr_report)
-
-    script:
-    confindr_report="${meta.sample_id}_confindr_report.csv"
-    """
-    do_confindr.py --slyph_report $slyph_report --meta_sample_id $meta.sample_id --type $type --read_one $short_reads1 --read_two $short_reads2 --confindr_out $confindr_report --database_directory $database_directory
-    """
-}
-
-
 
 process SYLPH_FASTQS {
     label 'sylph_container'

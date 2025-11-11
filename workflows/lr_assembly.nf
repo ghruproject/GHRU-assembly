@@ -11,7 +11,7 @@ include { ASSEMBLY_DEPTH                 }  from '../modules/assembly_depth'
 include { COMBINE_REPORTS_LR             }  from '../modules/combine_reports'
 include { SPECCHECK_LR                   } from '../modules/speccheck'
 include { SPECCHECK_SUMMARY              } from '../modules/speccheck'
-include { CONFINDR_FASTQS                } from '../modules/contamination'
+include { SPECCHECK_SUMMARY_DETAILED     } from '../modules/speccheck'
 include { SYLPH_FASTQS_LR                } from '../modules/contamination'
 
 
@@ -70,8 +70,11 @@ workflow LR_ASSEMBLY{
     SPECCHECK_LR(combined_reports_speccheck)
 
     // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
+    sum_detailed = SPECCHECK_LR.out.detailed_report.map({ meta, filepath -> filepath}).collect()
+    SPECCHECK_SUMMARY_DETAILED(sum_detailed, "long")
+
+    //to generate simple summary as well
     sum = SPECCHECK_LR.out.report.map({ meta, filepath -> filepath}).collect()
     SPECCHECK_SUMMARY(sum, "long")
-
 
 }

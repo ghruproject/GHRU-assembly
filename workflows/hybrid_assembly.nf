@@ -16,7 +16,7 @@ include { COMBINE_DEPTH_REPORTS               } from '../modules/assembly_depth'
 include { COMBINE_REPORTS                     } from '../modules/combine_reports'
 include { SPECCHECK                           } from '../modules/speccheck'
 include { SPECCHECK_SUMMARY                   } from '../modules/speccheck'
-include { CONFINDR_FASTQS                     } from '../modules/contamination'
+include { SPECCHECK_SUMMARY_DETAILED          } from '../modules/speccheck'
 include { SYLPH_FASTQS                        } from '../modules/contamination'
 
 workflow HY_ASSEMBLY{
@@ -95,6 +95,11 @@ workflow HY_ASSEMBLY{
     SPECCHECK(combined_reports_speccheck)
 
     // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
-    sum = SPECCHECK.out.report.map({ meta, filepath -> filepath}).collect()
+    sum_detailed = SPECCHECK.out.detailed_report.map({ meta, filepath -> filepath}).collect()
+    SPECCHECK_SUMMARY_DETAILED(sum_detailed, "hybrid")
+
+    //to generate simple summary as well
+    sum = SPECCHECK.out.detailed_report.map({ meta, filepath -> filepath}).collect()
     SPECCHECK_SUMMARY(sum, "hybrid")
+
  }
