@@ -10,8 +10,8 @@ include { CALCULATEBASES_SR              } from '../modules/calculate_bases'
 include { ASSEMBLY_DEPTH                 } from '../modules/assembly_depth'
 include { COMBINE_REPORTS                } from '../modules/combine_reports'
 include { SPECCHECK                      } from '../modules/speccheck'
-include { SPECCHECK_SUMMARY              } from '../modules/speccheck'
-include { CONFINDR_FASTQS                } from '../modules/contamination'
+include { SPECCHECK_SUMMARY_DETAILED     } from '../modules/speccheck'
+include { SPECCHECK_SUMMARY               } from '../modules/speccheck'
 include { SYLPH_FASTQS                   } from '../modules/contamination'
 
 
@@ -61,13 +61,16 @@ workflow SR_ASSEMBLY{
        .join(species, failOnDuplicate: true)
        .join(SPECIATION.out.species_report, failOnDuplicate: true)
        .join(CONTAMINATION_CHECKM.out, failOnDuplicate: true)
-        .join(ASSEMBLY_DEPTH.out, failOnDuplicate: true)
-        .join(SYLPH_FASTQS.out, failOnDuplicate: true)
+       .join(ASSEMBLY_DEPTH.out, failOnDuplicate: true)
+       .join(SYLPH_FASTQS.out, failOnDuplicate: true)
     
     //run speccheck
     SPECCHECK(combined_reports_speccheck)
 
     // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
+    sum_detailed = SPECCHECK.out.detailed_report.map({ meta, filepath -> filepath}).collect()
+    SPECCHECK_SUMMARY_DETAILED(sum_detailed, "short")
+    //to generate simple summary as well
     sum = SPECCHECK.out.report.map({ meta, filepath -> filepath}).collect()
     SPECCHECK_SUMMARY(sum, "short")
 
