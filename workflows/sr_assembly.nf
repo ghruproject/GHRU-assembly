@@ -64,14 +64,15 @@ workflow SR_ASSEMBLY{
        .join(ASSEMBLY_DEPTH.out, failOnDuplicate: true)
        .join(SYLPH_FASTQS.out, failOnDuplicate: true)
     
-    //run speccheck
-    SPECCHECK(combined_reports_speccheck)
+    if (params.run_speccheck) {
+        SPECCHECK(combined_reports_speccheck)
 
-    // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
-    sum_detailed = SPECCHECK.out.detailed_report.map({ meta, filepath -> filepath}).collect()
-    SPECCHECK_SUMMARY_DETAILED(sum_detailed, "short")
-    //to generate simple summary as well
-    sum = SPECCHECK.out.report.map({ meta, filepath -> filepath}).collect()
-    SPECCHECK_SUMMARY(sum, "short")
+        // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
+        sum_detailed = SPECCHECK.out.report.map({ meta, filepath -> filepath}).collect()
+        SPECCHECK_SUMMARY_DETAILED(sum_detailed, "short")
+        //to generate simple summary as well
+        sum = SPECCHECK.out.report.map({ meta, filepath -> filepath}).collect()
+        SPECCHECK_SUMMARY(sum, "short")
+    }
 
 }

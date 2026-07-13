@@ -91,15 +91,17 @@ workflow HY_ASSEMBLY{
         .join(COMBINE_DEPTH_REPORTS.out, failOnDuplicate: true)
         .join(SYLPH_FASTQS.out, failOnDuplicate: true)
 
-    //run speccheck    
-    SPECCHECK(combined_reports_speccheck)
+    if (params.run_speccheck) {
+        //run speccheck
+        SPECCHECK(combined_reports_speccheck)
 
-    // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
-    sum_detailed = SPECCHECK.out.detailed_report.map({ meta, filepath -> filepath}).collect()
-    SPECCHECK_SUMMARY_DETAILED(sum_detailed, "hybrid")
+        // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
+        sum_detailed = SPECCHECK.out.report.map({ meta, filepath -> filepath}).collect()
+        SPECCHECK_SUMMARY_DETAILED(sum_detailed, "hybrid")
 
-    //to generate simple summary as well
-    sum = SPECCHECK.out.detailed_report.map({ meta, filepath -> filepath}).collect()
-    SPECCHECK_SUMMARY(sum, "hybrid")
+        //to generate simple summary as well
+        sum = SPECCHECK.out.report.map({ meta, filepath -> filepath}).collect()
+        SPECCHECK_SUMMARY(sum, "hybrid")
+    }
 
  }
