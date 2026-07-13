@@ -66,15 +66,17 @@ workflow LR_ASSEMBLY{
         .join(ASSEMBLY_DEPTH.out, failOnDuplicate: true)
         .join(SYLPH_FASTQS_LR.out, failOnDuplicate: true)
 
-    //give combined reports to speccheck
-    SPECCHECK_LR(combined_reports_speccheck)
+    if (params.run_speccheck) {
+        //give combined reports to speccheck
+        SPECCHECK_LR(combined_reports_speccheck)
 
-    // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
-    sum_detailed = SPECCHECK_LR.out.detailed_report.map({ meta, filepath -> filepath}).collect()
-    SPECCHECK_SUMMARY_DETAILED(sum_detailed, "long")
+        // Collect files from SPECCHECK and give to SPECCHECK_SUMMARY
+        sum_detailed = SPECCHECK_LR.out.report.map({ meta, filepath -> filepath}).collect()
+        SPECCHECK_SUMMARY_DETAILED(sum_detailed, "long")
 
-    //to generate simple summary as well
-    sum = SPECCHECK_LR.out.report.map({ meta, filepath -> filepath}).collect()
-    SPECCHECK_SUMMARY(sum, "long")
+        //to generate simple summary as well
+        sum = SPECCHECK_LR.out.report.map({ meta, filepath -> filepath}).collect()
+        SPECCHECK_SUMMARY(sum, "long")
+    }
 
 }

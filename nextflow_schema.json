@@ -78,6 +78,22 @@
       "hidden": true,
       "description": "Maximum time to use for each process",
       "default": "10.h"
+    },
+    "run_speccheck": {
+      "type": "boolean",
+      "hidden": true,
+      "description": "Run the in-pipeline speccheck stage",
+      "default": true
+    },
+    "speccheck_criteria_file": {
+      "type": "string",
+      "hidden": true,
+      "description": "Optional criteria CSV path for the in-pipeline speccheck stage. Defaults to /app/criteria.csv inside the speccheck container."
+    },
+    "speccheck_template_file": {
+      "type": "string",
+      "hidden": true,
+      "description": "Optional HTML template path for the in-pipeline speccheck summary stage. Defaults to /app/templates/report.html inside the speccheck container."
     }
   }
 }

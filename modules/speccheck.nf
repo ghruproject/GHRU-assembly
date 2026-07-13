@@ -15,9 +15,10 @@ process SPECCHECK{
     script:
     report="${meta.sample_id}.${meta.type}.csv"
     detailed_report="detailed.${meta.sample_id}.${meta.type}.csv"
+    criteria_file = params.speccheck_criteria_file ?: "/app/criteria.csv"
 
     """
-    speccheck collect --sample ${meta.sample_id} --criteria-file /app/criteria.csv --organism "${species_name}" --output-file ${report} *
+    speccheck collect --sample ${meta.sample_id} --criteria-file ${criteria_file} --organism "${species_name}" --output-file ${report} *
     """   
 }
 
@@ -37,8 +38,9 @@ process SPECCHECK_LR{
     script:
     report="${meta.sample_id}.${meta.type}.csv"
     detailed_report="detailed.${meta.sample_id}.${meta.type}.csv"
+    criteria_file = params.speccheck_criteria_file ?: "/app/criteria.csv"
     """
-    speccheck collect --sample ${meta.sample_id} --criteria-file /app/criteria.csv --organism "${species_name}" --output-file ${report} *
+    speccheck collect --sample ${meta.sample_id} --criteria-file ${criteria_file} --organism "${species_name}" --output-file ${report} *
     """   
 }
 
@@ -59,9 +61,10 @@ process SPECCHECK_SUMMARY_DETAILED{
     path("html.${type}_report"), emit:qc_html
 
     script:
+    template_file = params.speccheck_template_file ?: "/app/templates/report.html"
     """
-    speccheck summary ./  --templates /app/templates/report.html --plot
-    mv qc_report/report.csv qc_report.${type}.detailed.csv
+    speccheck summary ./  --templates ${template_file} --plot
+    mv qc_report/report.full.csv qc_report.${type}.detailed.csv
     mv qc_report html.${type}_report
     """   
 }
